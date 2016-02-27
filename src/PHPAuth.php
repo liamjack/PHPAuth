@@ -128,7 +128,7 @@ class PHPAuth {
             throw new \Exception("not_authenticated");
         }
 
-        $this->authenticatedUser->changePassword($password, $newPassword, $repeatPassword);
+        $this->authenticatedUser->changePassword($password, $newPassword, $repeatNewPassword);
         $this->database->updateUser($this->authenticatedUser);
     }
 
