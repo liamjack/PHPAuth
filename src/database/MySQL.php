@@ -19,7 +19,14 @@ class MySQL implements \PHPAuth\Database {
         $this->dbh = new \PDO("mysql:dbname={$databaseName};host={$host}", $username, $password);
 
         $this->dbh->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+        $this->dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     }
+
+    /**
+     * Returns a user from the database by id, or NULL on failure
+     * @param   int     $userId     The user Id to lookup
+     * @return  User
+     */
 
     public function getUserById($userId) {
         $query = $this->dbh->prepare("SELECT * FROM user WHERE id = ?");
@@ -38,6 +45,12 @@ class MySQL implements \PHPAuth\Database {
         );
     }
 
+    /**
+     * Returns a user from the database by email, or NULL on failure
+     * @param   string  $email  The email address to lookup
+     * @return  User
+     */
+
     public function getUserByEmail($email) {
         $query = $this->dbh->prepare("SELECT * FROM user WHERE email = ?");
         $query->execute(array($email));
@@ -55,6 +68,12 @@ class MySQL implements \PHPAuth\Database {
         );
     }
 
+    /**
+     * Informs if a user exists with a given email address
+     * @param   string  $email  The email address to lookup
+     * @return  bool
+     */
+
     public function doesUserExistByEmail($email) {
         $query = $this->dbh->prepare("SELECT * FROM user WHERE email = ?");
         $query->execute(array($email));
@@ -66,12 +85,52 @@ class MySQL implements \PHPAuth\Database {
         return true;
     }
 
+    /**
+     * Adds a user to the database
+     * @param   User    $user
+     * @throws  Exception
+     */
+
     public function addUser(\PHPAuth\User $user) {
         $query = $this->dbh->prepare("INSERT INTO user (email, password) VALUES (?, ?)");
+        $query->execute(
+            array(
+                $user->getEmail(),
+                $user->getPassword()
+            )
+        );
+    }
 
-        if(!$query->execute(array($user->getEmail(), $user->getPassword()))) {
-            throw new \Exception("system_error");
-        }
+    /**
+     * Updates a user in the database
+     * @param   User    $user
+     * @throws  Exception
+     */
+
+    public function updateUser(\PHPAuth\User $user) {
+        $query = $this->dbh->prepare("UPDATE user SET email = ?, password = ? WHERE id = ?");
+        $query->execute(
+            array(
+                $user->getEmail(),
+                $user->getPassword(),
+                $user->getId()
+            )
+        );
+    }
+
+    /**
+     * Deletes a user from the database by user ID
+     * @param   int     $userId
+     * @throws  Exception
+     */
+
+    public function deleteUser($userId) {
+        $query = $this->dbh->prepare("DELETE FROM user WHERE id = ?");
+        $query->execute(
+            array(
+                $userId
+            )
+        );
     }
 
     /**

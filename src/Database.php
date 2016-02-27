@@ -37,6 +37,22 @@ interface Database {
     public function addUser(\PHPAuth\User $user);
 
     /**
+     * Updates a user in the database
+     * @param   User    $user
+     * @throws  Exception
+     */
+
+    public function updateUser(\PHPAuth\User $user);
+
+    /**
+     * Deletes a user from the database by user ID
+     * @param   int     $userId
+     * @throws  Exception
+     */
+
+    public function deleteUser($userId);
+
+    /**
      * Adds a session to the database
      * @param   Session     $session    The session to add
      * @throws  Exception
