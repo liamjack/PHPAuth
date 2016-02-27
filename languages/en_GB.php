@@ -2,6 +2,8 @@
 
 $language = array();
 
+$language['registration_disabled'] = "Registration disabled.";
+
 $language['email_empty'] = "Email address field is empty.";
 $language['email_short'] = "Email address is too short.";
 $language['email_long'] = "Email address is too long.";
@@ -21,5 +23,8 @@ $language['is_persistent_invalid'] = "Remember me value invalid.";
 $language['session_uuid_invalid'] = "Session UUID is invalid.";
 
 $language['email_password_incorrect'] = "Email address and / or password incorrect.";
+
+$language['already_authenticated'] = "Already authenticated.";
+$language['not_authenticated'] = "Authentication required.";
 
 $language['system_error'] = "System error encountered.";

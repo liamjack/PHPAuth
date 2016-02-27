@@ -49,7 +49,7 @@ class MySQL implements \PHPAuth\Database {
 		$data = $query->fetch();
 
 		return new \PHPAuth\User(
-			$data['id']
+			$data['id'],
 			$data['email'],
 			$data['password']
 		);

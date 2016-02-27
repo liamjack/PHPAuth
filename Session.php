@@ -2,6 +2,11 @@
 
 namespace PHPAuth;
 
+/**
+ * @author Liam Jack <cuonic@cuonic.com>
+ * @license MIT
+ */
+
 class Session {
 	private $uuid;
 	private $userId;
