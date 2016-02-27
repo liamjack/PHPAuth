@@ -210,6 +210,6 @@ class User {
      */
 
     public static function createUser($email, $password) {
-        return new User($email, self::hashPassword($password), NULL);
+        return new User(NULL, $email, self::hashPassword($password));
     }
 }
