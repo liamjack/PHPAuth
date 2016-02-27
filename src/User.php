@@ -110,7 +110,9 @@ class User {
         if(strlen($password) > Configuration::PASSWORD_MAXIMUM_LENGTH) {
             throw new \Exception("password_long");
         }
+    }
 
+    public static function validatePasswordStrength($password) {
         $zxcvbn = new \ZxcvbnPhp\Zxcvbn();
         $score = $zxcvbn->passwordStrength($password)['score'];
 
@@ -132,7 +134,8 @@ class User {
         self::validatePassword($password);
 
         // Validate new password
-        self::validatePassword($newPassword, $repeatNewPassword);
+        self::validatePassword($newPassword);
+        self::validatePasswordStrength($newPassword);
 
         if($newPassword !== $repeatNewPassword) {
             // New password and confirmation do not match

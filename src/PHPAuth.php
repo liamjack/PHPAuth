@@ -94,6 +94,9 @@ class PHPAuth {
         // Validate password
         User::validatePassword($password);
 
+        // Validate password strength
+        User::validatePasswordStrength($password);
+
         if($password !== $repeatPassword) {
             // Password and password confirmation do not match
             throw new \Exception("password_no_match");
