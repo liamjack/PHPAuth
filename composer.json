@@ -1,5 +1,12 @@
 {
+	"name": "cuonic/phpauth",
+	"description": "Easy to use PHP Authentication library",
+	"type": "library",
+	"homepage": "https://phpauth.cuonic.com/",
+	"license": "MIT",
     "require": {
-        "bjeavons/zxcvbn-php": "^0.1.4"
+    	"php": ">=5.3.7",
+        "bjeavons/zxcvbn-php": "*",
+		"ircmaxell/password-compat": "^1.0"
     }
 }
