@@ -12,6 +12,12 @@ class User {
     private $email;
     private $password;
 
+    /**
+     * @param   int     $id         User ID in database
+     * @param   string  $email      User's email address
+     * @param   string  $password   User's hashed password
+     */
+
     public function __construct($id, $email, $password) {
         $this->id = $id;
         $this->email = $email;
@@ -111,6 +117,12 @@ class User {
             throw new \Exception("password_long");
         }
     }
+
+    /**
+     * Check if a password respects the site's password strength requirements
+     * @param   string  $password
+     * @throws  Exception
+     */
 
     public static function validatePasswordStrength($password) {
         $zxcvbn = new \ZxcvbnPhp\Zxcvbn();

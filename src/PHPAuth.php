@@ -10,7 +10,14 @@ namespace PHPAuth;
 class PHPAuth {
     private $database;
     private $isAuthenticated = false;
+    private $currentSession = NULL;
     private $authenticatedUser = NULL;
+
+    /**
+     * Creates a new instance of the class, checking if the current user is authenticated
+     * or not.
+     * @param   Database    $database
+     */
 
     public function __construct(Database $database) {
         $this->database = $database;
@@ -128,7 +135,10 @@ class PHPAuth {
             throw new \Exception("not_authenticated");
         }
 
+        // Change the user's password
         $this->authenticatedUser->changePassword($password, $newPassword, $repeatNewPassword);
+
+        // Push the change to the database
         $this->database->updateUser($this->authenticatedUser);
     }
 
@@ -145,8 +155,55 @@ class PHPAuth {
             throw new \Exception("not_authenticated");
         }
 
+        // Change the user's email address
         $this->authenticatedUser->changeEmail($password, $newEmail);
+
+        // Push the change to the database
         $this->database->updateUser($this->authenticatedUser);
+    }
+
+    /**
+     * Deletes a users account
+     * @param   string      $password
+     * @throws  Exception   
+     */
+
+    public function delete($password) {
+        if(!$this->isAuthenticated()) {
+            // User is not authenticated
+            throw new \Exception("not_authenticated");
+        }
+
+        // Validate password
+        User::validatePassword($password);
+
+        if($this->authenticatedUser->verifyPassword($password)) {
+            // User's password is incorrect
+            throw new \Exception("password_incorrect");
+        }
+
+        // Delete the user from the database
+        $this->database->deleteUser($this->authenticatedUser->getId());
+
+        // Logout the user
+        $this->logout();
+    }
+
+    /**
+     * Logs the user out
+     */
+
+    public function logout() {
+        if(!$this->isAuthenticated()) {
+            // User is not authenticated
+            throw new \Exception("not_authenticated");
+        }
+
+        // Delete the user's session from database
+        $this->database->deleteSession($this->currentSession->getUuid());
+
+        // Delete user's cookie
+        $this->deleteSessionCookie();
     }
 
     /**
@@ -168,26 +225,26 @@ class PHPAuth {
         }
 
         // Fetch the session from the database
-        $session = $this->database->getSession($sessionUuid);
+        $this->currentSession = $this->database->getSession($sessionUuid);
 
-        if($session == NULL) {
+        if($this->currentSession == NULL) {
             // Session doesn't exist
             return false;
         }
 
-        if(!$session->isValid()) {
+        if(!$this->currentSession->isValid()) {
             // Session is invalid, delete
             $this->database->deleteSession($sessionUuid);
             return false;
         }
 
-        if($session->isUpdateRequired()) {
+        if($this->currentSession->isUpdateRequired()) {
             // Session has been updated during verification, push update to database
-            $this->database->updateSession($session);
+            $this->database->updateSession($this->currentSession);
         }
 
         // Session is valid, set authenticated user
-        $this->setAuthenticatedUserById($session->getUserId());
+        $this->setAuthenticatedUserById($this->currentSession->getUserId());
 
         return true;
     }
@@ -234,6 +291,15 @@ class PHPAuth {
         } else {
             $this->isAuthenticated = true;
         }
+    }
+
+    /**
+     * Returns the current session
+     * @return  Session
+     */
+
+    public function getCurrentSession() {
+        return $this->currentSession;
     }
 
     /**

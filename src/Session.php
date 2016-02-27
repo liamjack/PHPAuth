@@ -17,6 +17,16 @@ class Session {
     private $isPersistent;
     private $isUpdateRequired = false;
 
+    /**
+     * @param   string  $uuid
+     * @param   int     $userId
+     * @param   string  $userAgent
+     * @param   string  $ipAddress
+     * @param   int     $creationDate
+     * @param   int     $expiryDate
+     * @param   bool    $isPersistent
+     */
+
     public function __construct($uuid, $userId, $userAgent, $ipAddress, $creationDate, $expiryDate, $isPersistent = false) {
         $this->uuid = $uuid;
         $this->userId = $userId;
@@ -27,43 +37,93 @@ class Session {
         $this->isPersistent = $isPersistent;
     }
 
+    /**
+     * Returns the session's UUID
+     * @return  string
+     */
+
     public function getUuid() {
         return $this->uuid;
     }
+
+    /**
+     * Returns the ID of the user associated with the session
+     * @return  int
+     */
 
     public function getUserId() {
         return $this->userId;
     }
 
+    /**
+     * Returns the user agent associated with the session
+     * @return  string
+     */
+
     public function getUserAgent() {
         return $this->userAgent;
     }
 
+    /**
+     * Returns the IP Address associated with the session
+     * @return  int
+     */
+
     public function getIpAddress() {
         return $this->ipAddress;
     }
+
+    /**
+     * Modifies the IP address associated with the session
+     * @param   string  $ipAddress
+     */
 
     private function setIpAddress($ipAddress) {
         $this->isUpdateRequired = true;
         $this->ipAddress = $ipAddress;
     }
 
+    /**
+     * Returns the creation date (timestamp) of the session
+     * @return  int
+     */
+
     public function getCreationDate() {
         return $this->creationDate;
     }
 
+    /**
+     * Returns the expiry date (timestamp) of the session
+     * @return  int
+     */
+
     public function getExpiryDate() {
         return $this->expiryDate;
     }
+
+    /**
+     * Modifies the expiry date of the session
+     * @param   int     $expiryDate
+     */
 
     private function setExpiryDate($expiryDate) {
         $this->isUpdateRequired = true;
         $this->expiryDate = $expiryDate;
     }
 
+    /**
+     * Indicates whether the session is persistent or not
+     * @return  bool
+     */
+
     public function isPersistent() {
         return $this->isPersistent;
     }
+
+    /**
+     * Indicates whether the session has been updated during validation and requires updating
+     * @return  bool
+     */
 
     public function isUpdateRequired() {
         return $this->isUpdateRequired;
