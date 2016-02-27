@@ -1,12 +1,30 @@
 {
-	"name": "cuonic/phpauth",
-	"description": "Easy to use PHP Authentication library",
-	"type": "library",
-	"homepage": "https://phpauth.cuonic.com/",
-	"license": "MIT",
+    "name": "cuonic/phpauth",
+    "description": "Easy to use PHP Authentication library",
+    "type": "library",
+    "homepage": "https://phpauth.cuonic.com/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Liam Jack",
+            "email": "cuonic@cuonic.com",
+            "homepage": "https://www.cuonic.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/cuonic/PHPAuth/issues",
+        "source": "https://github.com/cuonic/PHPAuth",
+        "wiki": "https://github.com/cuonic/PHPAuth/wiki"
+    },
     "require": {
-    	"php": ">=5.3.7",
+        "php": ">=5.3.7",
         "bjeavons/zxcvbn-php": "*",
-		"ircmaxell/password-compat": "^1.0"
+        "ircmaxell/password-compat": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PHPAuth\\": "src/"
+        }
     }
 }
