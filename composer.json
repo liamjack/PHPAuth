@@ -23,8 +23,9 @@
         "ircmaxell/password-compat": "^1.0"
     },
     "autoload": {
-        "psr-0": {
-            "PHPAuth": "src/"
+        "psr-4": {
+            "PHPAuth\\": "src/",
+            "PHPAuth\\Database\\": "src/database"
         }
     }
 }
