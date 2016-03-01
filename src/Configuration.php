@@ -6,8 +6,8 @@ namespace PHPAuth;
  * @author Liam Jack <cuonic@cuonic.com>
  * @license MIT
  */
-
-class Configuration {
+class Configuration
+{
     // Whether registration is enabled of not
     const REGISTRATION_ENABLED = true;
 
@@ -41,5 +41,5 @@ class Configuration {
     // Whether the session cookie should only be transmitted via HTTPS
     const SESSION_COOKIE_SECURE = false;
     // Whether the session cookie should be only accessible via the HTTP protocol (not javascript)
-    const SESSION_COOKIE_HTTPONLY = TRUE;
+    const SESSION_COOKIE_HTTPONLY = true;
 }

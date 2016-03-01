@@ -6,43 +6,47 @@ namespace PHPAuth;
  * @author Liam Jack <cuonic@cuonic.com>
  * @license MIT
  */
-
-class PHPAuth {
+class PHPAuth
+{
     private $database;
     private $isAuthenticated = false;
-    private $currentSession = NULL;
-    private $authenticatedUser = NULL;
+    private $currentSession = null;
+    private $authenticatedUser = null;
 
     /**
      * Creates a new instance of the class, checking if the current user is authenticated
      * or not.
-     * @param   Database    $database
+     *
+     * @param Database $database
      */
-
-    public function __construct(Database $database) {
+    public function __construct(Database $database)
+    {
         $this->database = $database;
 
-        if(isset($_COOKIE[Configuration::SESSION_COOKIE_NAME])) {
+        if (isset($_COOKIE[Configuration::SESSION_COOKIE_NAME])) {
             $sessionUuid = $_COOKIE[Configuration::SESSION_COOKIE_NAME];
 
-            if(!$this->isSessionValid($sessionUuid)) {
+            if (!$this->isSessionValid($sessionUuid)) {
                 deleteSessionCookie();
             }
         }
     }
 
     /**
-     * Allows a user to authenticate and creates a new session
-     * @param  string   $email      User's email address
-     * @param  string   $password   User's password
+     * Allows a user to authenticate and creates a new session.
+     *
+     * @param string $email    User's email address
+     * @param string $password User's password
+     *
      * @return session
+     *
      * @throws Exception
      */
-
-    public function login($email, $password, $isPersistent = false) {
-        if($this->isAuthenticated()) {
+    public function login($email, $password, $isPersistent = false)
+    {
+        if ($this->isAuthenticated()) {
             // User is already authenticated
-            throw new \Exception("already_authenticated");
+            throw new \Exception('already_authenticated');
         }
 
         // Validate email address
@@ -54,14 +58,14 @@ class PHPAuth {
         // Get user with provided email address
         $user = $this->database->getUserByEmail($email);
 
-        if($user == NULL) {
+        if ($user == null) {
             // User does not exist
-            throw new \Exception("email_password_incorrect");
+            throw new \Exception('email_password_incorrect');
         }
 
-        if(!$user->verifyPassword($password)) {
+        if (!$user->verifyPassword($password)) {
             // Provided password doesn't match the user's password
-            throw new \Exception("email_password_incorrect");
+            throw new \Exception('email_password_incorrect');
         }
 
         // Create a new session
@@ -78,21 +82,23 @@ class PHPAuth {
     }
 
     /**
-     * Creates a new user account
-     * @param   string $email           User's email address
-     * @param   string $password        User's desired password
-     * @param   string $repeatPassword  User's desired password, repeated to prevent typos
-     * @throws  Exception
+     * Creates a new user account.
+     *
+     * @param string $email          User's email address
+     * @param string $password       User's desired password
+     * @param string $repeatPassword User's desired password, repeated to prevent typos
+     *
+     * @throws Exception
      */
-
-    public function register($email, $password, $repeatPassword) {
-        if(!Configuration::REGISTRATION_ENABLED) {
-            throw new \Exception("registration_disabled");
+    public function register($email, $password, $repeatPassword)
+    {
+        if (!Configuration::REGISTRATION_ENABLED) {
+            throw new \Exception('registration_disabled');
         }
 
-        if($this->isAuthenticated()) {
+        if ($this->isAuthenticated()) {
             // User is already authenticated
-            throw new \Exception("already_authenticated");
+            throw new \Exception('already_authenticated');
         }
 
         // Validate email address
@@ -104,14 +110,14 @@ class PHPAuth {
         // Validate password strength
         User::validatePasswordStrength($password);
 
-        if($password !== $repeatPassword) {
+        if ($password !== $repeatPassword) {
             // Password and password confirmation do not match
-            throw new \Exception("password_no_match");
+            throw new \Exception('password_no_match');
         }
 
-        if($this->database->doesUserExistByEmail($email)) {
+        if ($this->database->doesUserExistByEmail($email)) {
             // User with this email address already exists
-            throw new \Exception("email_used");
+            throw new \Exception('email_used');
         }
 
         // Create new user
@@ -122,17 +128,19 @@ class PHPAuth {
     }
 
     /**
-     * Changes the authenticated user's password
-     * @param   string  $password
-     * @param   string  $newPassword
-     * @param   string  $repeatNewPassword
-     * @throws  Exception
+     * Changes the authenticated user's password.
+     *
+     * @param string $password
+     * @param string $newPassword
+     * @param string $repeatNewPassword
+     *
+     * @throws Exception
      */
-
-    public function changePassword($password, $newPassword, $repeatNewPassword) {
-        if(!$this->isAuthenticated()) {
+    public function changePassword($password, $newPassword, $repeatNewPassword)
+    {
+        if (!$this->isAuthenticated()) {
             // User is not authenticated
-            throw new \Exception("not_authenticated");
+            throw new \Exception('not_authenticated');
         }
 
         // Change the user's password
@@ -143,16 +151,18 @@ class PHPAuth {
     }
 
     /**
-     * Changes the authenticated user's email address
-     * @param   string  $password
-     * @param   string  $newEmail
-     * @throws  Exception
+     * Changes the authenticated user's email address.
+     *
+     * @param string $password
+     * @param string $newEmail
+     *
+     * @throws Exception
      */
-
-    public function changeEmail($password, $newEmail) {
-        if(!$this->isAuthenticated()) {
+    public function changeEmail($password, $newEmail)
+    {
+        if (!$this->isAuthenticated()) {
             // User is not authenticated
-            throw new \Exception("not_authenticated");
+            throw new \Exception('not_authenticated');
         }
 
         // Change the user's email address
@@ -163,23 +173,25 @@ class PHPAuth {
     }
 
     /**
-     * Deletes a users account
-     * @param   string      $password
-     * @throws  Exception   
+     * Deletes a users account.
+     *
+     * @param string $password
+     *
+     * @throws Exception
      */
-
-    public function delete($password) {
-        if(!$this->isAuthenticated()) {
+    public function delete($password)
+    {
+        if (!$this->isAuthenticated()) {
             // User is not authenticated
-            throw new \Exception("not_authenticated");
+            throw new \Exception('not_authenticated');
         }
 
         // Validate password
         User::validatePassword($password);
 
-        if($this->authenticatedUser->verifyPassword($password)) {
+        if ($this->authenticatedUser->verifyPassword($password)) {
             // User's password is incorrect
-            throw new \Exception("password_incorrect");
+            throw new \Exception('password_incorrect');
         }
 
         // Delete the user from the database
@@ -190,13 +202,13 @@ class PHPAuth {
     }
 
     /**
-     * Logs the user out
+     * Logs the user out.
      */
-
-    public function logout() {
-        if(!$this->isAuthenticated()) {
+    public function logout()
+    {
+        if (!$this->isAuthenticated()) {
             // User is not authenticated
-            throw new \Exception("not_authenticated");
+            throw new \Exception('not_authenticated');
         }
 
         // Delete the user's session from database
@@ -208,37 +220,40 @@ class PHPAuth {
 
     /**
      * Checks whether a user's session is valid or not and performs
-     * modifications / deletions of sessions when necessary
-     * @param   string  $sessionUuid    The session's UUID
-     * @return  bool
+     * modifications / deletions of sessions when necessary.
+     *
+     * @param string $sessionUuid The session's UUID
+     *
+     * @return bool
      */
-
-    public function isSessionValid($sessionUuid) {
-        if($this->isAuthenticated()) {
+    public function isSessionValid($sessionUuid)
+    {
+        if ($this->isAuthenticated()) {
             // Session already validated
             return true;
         }
 
         // Validate the session's UUID
-        if(!Session::validateUuid($sessionUuid)) {
+        if (!Session::validateUuid($sessionUuid)) {
             return false;
         }
 
         // Fetch the session from the database
         $this->currentSession = $this->database->getSession($sessionUuid);
 
-        if($this->currentSession == NULL) {
+        if ($this->currentSession == null) {
             // Session doesn't exist
             return false;
         }
 
-        if(!$this->currentSession->isValid()) {
+        if (!$this->currentSession->isValid()) {
             // Session is invalid, delete
             $this->database->deleteSession($sessionUuid);
+
             return false;
         }
 
-        if($this->currentSession->isUpdateRequired()) {
+        if ($this->currentSession->isUpdateRequired()) {
             // Session has been updated during verification, push update to database
             $this->database->updateSession($this->currentSession);
         }
@@ -250,42 +265,46 @@ class PHPAuth {
     }
 
     /**
-     * Indicates if the user is authenticated
-     * @return  bool
+     * Indicates if the user is authenticated.
+     *
+     * @return bool
      */
-
-    public function isAuthenticated() {
+    public function isAuthenticated()
+    {
         return $this->isAuthenticated;
     }
 
     /**
-     * Returns the currently authenticated user, or NULL if no user is not authenticated
-     * @return  User
+     * Returns the currently authenticated user, or NULL if no user is not authenticated.
+     *
+     * @return User
      */
-
-    public function getAuthenticatedUser() {
+    public function getAuthenticatedUser()
+    {
         return $this->authenticatedUser;
     }
 
     /**
-     * Sets the currently authenticated user
-     * @param   User    $user
+     * Sets the currently authenticated user.
+     *
+     * @param User $user
      */
-
-    private function setAuthenticatedUser(User $user) {
+    private function setAuthenticatedUser(User $user)
+    {
         $this->authenticatedUser = $user;
         $this->isAuthenticated = true;
     }
 
     /**
-     * Sets the currently authenticated user by User ID, fetching the user from database
-     * @param   int     $userId
+     * Sets the currently authenticated user by User ID, fetching the user from database.
+     *
+     * @param int $userId
      */
-
-    private function setAuthenticatedUserById($userId) {
+    private function setAuthenticatedUserById($userId)
+    {
         $this->authenticatedUser = $this->database->getUserById($userId);
 
-        if($this->authenticatedUser == NULL) {
+        if ($this->authenticatedUser == null) {
             // User doesn't exist
             $this->isAuthenticated = false;
         } else {
@@ -294,21 +313,23 @@ class PHPAuth {
     }
 
     /**
-     * Returns the current session
-     * @return  Session
+     * Returns the current session.
+     *
+     * @return Session
      */
-
-    public function getCurrentSession() {
+    public function getCurrentSession()
+    {
         return $this->currentSession;
     }
 
     /**
-     * Sets the user's session cookie
-     * @param   string  $sessionUuid
-     * @param   int     $expiryDate
+     * Sets the user's session cookie.
+     *
+     * @param string $sessionUuid
+     * @param int    $expiryDate
      */
-
-    public function setSessionCookie($sessionUuid, $expiryDate) {
+    public function setSessionCookie($sessionUuid, $expiryDate)
+    {
         setcookie(
             Configuration::SESSION_COOKIE_NAME,
             $sessionUuid,
@@ -321,13 +342,11 @@ class PHPAuth {
     }
 
     /**
-     * Deletes the user's session cookie
+     * Deletes the user's session cookie.
      */
-
-    public function deleteSessionCookie() {
+    public function deleteSessionCookie()
+    {
         unset($_COOKIE[Configuration::SESSION_COOKIE_NAME]);
-        setSessionCookie(NULL, time() - 3600);
+        setSessionCookie(null, time() - 3600);
     }
-
-
 }
