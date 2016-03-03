@@ -42,4 +42,9 @@ class Configuration
     const SESSION_COOKIE_SECURE = false;
     // Whether the session cookie should be only accessible via the HTTP protocol (not javascript)
     const SESSION_COOKIE_HTTPONLY = true;
+
+    // Whether account activation is required
+    const ACCOUNT_ACTIVATION_REQUIRED = false;
+
+    
 }

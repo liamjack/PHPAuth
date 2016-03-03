@@ -20,7 +20,8 @@
     "require": {
         "php": ">=5.3.7",
         "bjeavons/zxcvbn-php": "*",
-        "ircmaxell/password-compat": "^1.0"
+        "ircmaxell/password-compat": "^1.0",
+        "phpmailer/phpmailer": "^5.2"
     },
     "autoload": {
         "psr-4": {

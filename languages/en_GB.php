@@ -27,4 +27,6 @@ $language['email_password_incorrect'] = 'Email address and / or password incorre
 $language['already_authenticated'] = 'Already authenticated.';
 $language['not_authenticated'] = 'Authentication required.';
 
+$language['account_not_activated'] = "Account is not yet activated.";
+
 $language['system_error'] = 'System error encountered.';

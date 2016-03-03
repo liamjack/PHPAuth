@@ -63,6 +63,11 @@ class PHPAuth
             throw new \Exception('email_password_incorrect');
         }
 
+        if(!$user->isActivated()) {
+            // Account is not yet activated
+            throw new \Exception("account_not_activated");
+        }
+
         if (!$user->verifyPassword($password)) {
             // Provided password doesn't match the user's password
             throw new \Exception('email_password_incorrect');
@@ -189,7 +194,7 @@ class PHPAuth
         // Validate password
         User::validatePassword($password);
 
-        if ($this->authenticatedUser->verifyPassword($password)) {
+        if (!$this->authenticatedUser->verifyPassword($password)) {
             // User's password is incorrect
             throw new \Exception('password_incorrect');
         }

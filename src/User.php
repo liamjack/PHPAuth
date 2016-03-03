@@ -11,17 +11,19 @@ class User
     private $id;
     private $email;
     private $passwordHash;
+    private $isActivated;
 
     /**
      * @param int    $id            User ID in database
      * @param string $email         User's email address
      * @param string $passwordHash  User's hashed password
      */
-    public function __construct($id, $email, $passwordHash)
+    public function __construct($id, $email, $passwordHash, $isActivated)
     {
         $this->id = $id;
         $this->email = $email;
         $this->passwordHash = $passwordHash;
+        $this->isActivated = $isActivated;
     }
 
     /**
@@ -78,6 +80,24 @@ class User
         }
 
         $this->passwordHash = $passwordHash;
+    }
+
+    /**
+     * Indicates whether the account is activated or not
+     *
+     * @return  bool
+     */
+    public function isActivated() {
+        return $this->isActivated;
+    }
+
+    /**
+     * Modifies the activation status of the user
+     *
+     * @param bool
+     */
+    public function setIsActivated($isActivated) {
+        $this->isActivated = $isActivated;
     }
 
     /**
@@ -237,13 +257,14 @@ class User
     /**
      * Returns a new user.
      *
-     * @param string $email
-     * @param string $password
+     * @param string    $email          User's email address
+     * @param string    $password       User's password
+     * @param bool      $isActivated    Whether the newly created account is activated or not
      *
      * @return User
      */
-    public static function createUser($email, $password)
+    public static function createUser($email, $password, $isActivated = !Configuration::ACCOUNT_ACTIVATION_REQUIRED)
     {
-        return new self(null, $email, self::hashPassword($password));
+        return new self(null, $email, self::hashPassword($password), $isActivated);
     }
 }
