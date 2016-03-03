@@ -27,7 +27,7 @@ class PHPAuth
             $sessionUuid = $_COOKIE[Configuration::SESSION_COOKIE_NAME];
 
             if (!$this->isSessionValid($sessionUuid)) {
-                deleteSessionCookie();
+                $this->deleteSessionCookie();
             }
         }
     }
@@ -352,6 +352,6 @@ class PHPAuth
     public function deleteSessionCookie()
     {
         unset($_COOKIE[Configuration::SESSION_COOKIE_NAME]);
-        setSessionCookie(null, time() - 3600);
+        $this->setSessionCookie(null, time() - 3600);
     }
 }
