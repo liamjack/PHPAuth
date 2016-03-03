@@ -4,14 +4,14 @@ class UserTest extends PHPUnit_Framework_TestCase
 {
     public function testGetEmail()
     {
-        $user = new \PHPAuth\User('test@email.com', '$2y$10$MgJvUccl/OBHjtmNCeOqWOUh.w0K0uR5t.u7loZLuvvMfZCJpW98a');
+        $user = new \PHPAuth\User(1, 'test@email.com', '$2y$10$MgJvUccl/OBHjtmNCeOqWOUh.w0K0uR5t.u7loZLuvvMfZCJpW98a');
 
         $this->assertEquals('test@email.com', $user->getEmail());
     }
 
     public function testGetId()
     {
-        $user = new \PHPAuth\User('test@email.com', '$2y$10$MgJvUccl/OBHjtmNCeOqWOUh.w0K0uR5t.u7loZLuvvMfZCJpW98a', 59);
+        $user = new \PHPAuth\User(59, 'test@email.com', '$2y$10$MgJvUccl/OBHjtmNCeOqWOUh.w0K0uR5t.u7loZLuvvMfZCJpW98a');
 
         $this->assertEquals(59, $user->getId());
     }
@@ -110,7 +110,7 @@ class UserTest extends PHPUnit_Framework_TestCase
     {
         $password = \PHPAuth\User::hashPassword('testPassword');
 
-        $user = new \PHPAuth\User('test@email.com', $password);
+        $user = new \PHPAuth\User(1, 'test@email.com', $password);
         $user->verifyPassword('notTestPassword');
     }
 
@@ -118,7 +118,7 @@ class UserTest extends PHPUnit_Framework_TestCase
     {
         $password = \PHPAuth\User::hashPassword('testPassword');
 
-        $user = new \PHPAuth\User('test@email.com', $password);
+        $user = new \PHPAuth\User(1, 'test@email.com', $password);
         $this->assertEquals(null, $user->verifyPassword('testPassword'));
     }
 }
