@@ -20,7 +20,7 @@ CREATE TABLE `session` (
 CREATE TABLE `user` (
   `id` int(11) NOT NULL,
   `email` varchar(150) NOT NULL,
-  `password` varchar(60) NOT NULL,
+  `passwordHash` varchar(60) NOT NULL,
   `isActivated` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
