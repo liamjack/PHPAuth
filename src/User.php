@@ -10,19 +10,18 @@ class User
 {
     private $id;
     private $email;
-    private $password;
-    private $password_hash;
+    private $passwordHash;
 
     /**
-     * @param int    $id       User ID in database
-     * @param string $email    User's email address
-     * @param string $password User's hashed password
+     * @param int    $id            User ID in database
+     * @param string $email         User's email address
+     * @param string $passwordHash  User's hashed password
      */
-    public function __construct($id, $email, $password_hash)
+    public function __construct($id, $email, $passwordHash)
     {
         $this->id = $id;
         $this->email = $email;
-        $this->password_hash = $password_hash;
+        $this->passwordHash = $passwordHash;
     }
 
     /**
@@ -60,9 +59,9 @@ class User
      *
      * @return string
      */
-    public function getPassword()
+    public function getPasswordHash()
     {
-        return $this->password_hash;
+        return $this->passwordHash;
     }
 
     /**
@@ -72,13 +71,13 @@ class User
      *
      * @throws Exception
      */
-    private function setPassword($password_hash)
+    private function setPasswordHash($passwordHash)
     {
-        if (strlen($password_hash) != 60) {
+        if (strlen($passwordHash) != 60) {
             throw new \Exception('system_error');
         }
 
-        $this->password_hash = $password_hash;
+        $this->passwordHash = $passwordHash;
     }
 
     /**
@@ -178,7 +177,7 @@ class User
         $newPasswordHash = self::hashPassword($newPassword);
 
         // Change password
-        $this->setPassword($newPasswordHash);
+        $this->setPasswordHash($newPasswordHash);
     }
 
     /**
@@ -232,7 +231,7 @@ class User
      */
     public function verifyPassword($password)
     {
-        return password_verify($password, $this->password_hash);
+        return password_verify($password, $this->passwordHash);
     }
 
     /**
