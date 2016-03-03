@@ -67,7 +67,7 @@ class User
     /**
      * Modifies the user's hashed password.
      *
-     * @param string $password User's hashed password
+     * @param string $passwordHash User's hashed password
      *
      * @throws Exception
      */
