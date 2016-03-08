@@ -44,7 +44,7 @@ class MySQL implements \PHPAuth\Database
         return new \PHPAuth\User(
             $data['id'],
             $data['email'],
-            $data['password'],
+            $data['passwordHash'],
             $data['isActivated']
         );
     }
@@ -70,7 +70,7 @@ class MySQL implements \PHPAuth\Database
         return new \PHPAuth\User(
             $data['id'],
             $data['email'],
-            $data['password'],
+            $data['passwordHash'],
             $data['isActivated']
         );
     }
@@ -103,11 +103,11 @@ class MySQL implements \PHPAuth\Database
      */
     public function addUser(\PHPAuth\User $user)
     {
-        $query = $this->dbh->prepare('INSERT INTO user (email, password) VALUES (?, ?)');
+        $query = $this->dbh->prepare('INSERT INTO user (email, passwordHash) VALUES (?, ?)');
         $query->execute(
             array(
                 $user->getEmail(),
-                $user->getPassword(),
+                $user->getPasswordHash(),
             )
         );
     }
@@ -121,11 +121,11 @@ class MySQL implements \PHPAuth\Database
      */
     public function updateUser(\PHPAuth\User $user)
     {
-        $query = $this->dbh->prepare('UPDATE user SET email = ?, password = ?, isActivated = ? WHERE id = ?');
+        $query = $this->dbh->prepare('UPDATE user SET email = ?, passwordHash = ?, isActivated = ? WHERE id = ?');
         $query->execute(
             array(
                 $user->getEmail(),
-                $user->getPassword(),
+                $user->getPasswordHash(),
                 $user->isActivated(),
                 $user->getId(),
             )
