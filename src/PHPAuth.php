@@ -289,6 +289,28 @@ class PHPAuth
         if(!$token->validate($data)) {
             throw new \Exception("token_expired");
         }
+
+        if($token->getClaim('action') != 'activate') {
+            throw new \Exception("token_invalid");
+        }
+
+        $user = $this->database->getUserByEmail($token->getClaim('email'));
+
+        if($user == null) {
+            // No user exists with that email address
+            throw new \Exception("email_incorrect");
+        }
+
+        if($user->isActivated()) {
+            // Account is already activated
+            throw new \Exception("already_activated");
+        }
+
+        // Set the account as activated
+        $user->setIsActivated(true);
+
+        // Update user in database
+        $this->database->updateUser($user);
     }
 
 

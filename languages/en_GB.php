@@ -10,6 +10,7 @@ $language['email_long'] = 'Email address is too long.';
 $language['email_invalid'] = 'Email address is invalid.';
 $language['email_used'] = 'Email address is already in use.';
 $language['email_same'] = 'New email address is the same as the current email address.';
+$language['email_incorrect'] = 'Email address is incorrect.';
 
 $language['password_empty'] = 'Password field is empty.';
 $language['password_short'] = 'Password is too short.';
@@ -24,6 +25,7 @@ $language['session_uuid_invalid'] = 'Session UUID is invalid.';
 
 $language['email_password_incorrect'] = 'Email address and / or password incorrect.';
 
+$language['already_activated'] = 'Account already activated.';
 $language['already_authenticated'] = 'Already authenticated.';
 $language['not_authenticated'] = 'Authentication required.';
 
