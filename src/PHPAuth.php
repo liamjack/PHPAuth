@@ -268,6 +268,28 @@ class PHPAuth
         $this->sendEmail($email, Configuration::ACCOUNT_ACTIVATION_SUBJECT, $body, $altBody);
     }
 
+    /**
+     * Activate an account with a JWT token
+     *
+     * @param   string  $token
+     * 
+     * @throws  Exception
+     */
+    public function activate($token)
+    {
+        $token = (new \Lcobucci\JWT\Parser())->parse($token);
+        $signer = new \Lcobucci\JWT\Signer\Hmac\Sha256();
+
+        if(!$token->verify($signer, Configuration::ACCOUNT_ACTIVATION_SECRET)) {
+            throw new \Exception("token_invalid");
+        }
+
+        $data = new \Lcobucci\JWT\ValidationData();
+
+        var_dump($token->validate($data));
+    }
+
+
 
     /**
      * Sends an email to the provided email address, with the provided subject, body and altBody
