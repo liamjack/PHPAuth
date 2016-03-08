@@ -45,6 +45,36 @@ class Configuration
 
     // Whether account activation is required
     const ACCOUNT_ACTIVATION_REQUIRED = false;
+    // Amount of time an account activation link is valid for
+    const ACCOUNT_ACTIVATION_EXPIRY = '+30 minutes';
+    // Secret used to sign activation JWT
+    const ACCOUNT_ACTIVATION_SECRET = '01c8a42fe26f1937e3ff9cf7f17f1779e3bccd8ef3c9b1981d75e949642c7518';
+    // Subject of account activation email
+    const ACCOUNT_ACTIVATION_SUBJECT = 'PHPAuth - Account activation required';
+    // Path to Body template file of account activation email
+    const ACCOUNT_ACTIVATION_BODY_FILE = '../templates/activation_email.html';
+    // Path to AltBody template file of account activation email
+    const ACCOUNT_ACTIVATION_ALTBODY_FILE = '../templates/activation_email.txt';
 
-    
+
+    // Whether emails should be sent via SMTP or not
+    const MAIL_SMTP = false;
+    // SMTP Hostname
+    const MAIL_SMTP_HOSTNAME = 'smtp1.example.com';
+    // Whether SMTP authentication is required or not
+    const MAIL_SMTP_AUTH = true;
+    // SMTP Username
+    const MAIL_SMTP_USERNAME = 'user@example.com';
+    // SMTP Password
+    const MAIL_SMTP_PASSWORD = 'password';
+    // SMTP Security
+    const MAIL_SMTP_SECURE = 'tls';
+    // SMTP Port
+    const MAIL_SMTP_PORT = 587;
+
+    // Email to appear as sender of email
+    const MAIL_FROM_EMAIL = 'no-reply@example.com';
+    // Name to appear as sender of email
+    const MAIL_FROM_NAME = 'PHPAuth';
+
 }

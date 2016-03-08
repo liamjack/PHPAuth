@@ -27,6 +27,9 @@ $language['email_password_incorrect'] = 'Email address and / or password incorre
 $language['already_authenticated'] = 'Already authenticated.';
 $language['not_authenticated'] = 'Authentication required.';
 
-$language['account_not_activated'] = "Account is not yet activated.";
+$language['account_not_activated'] = 'Account is not yet activated.';
 
 $language['system_error'] = 'System error encountered.';
+
+$language['request_type_invalid'] = 'Request type is invalid.';
+$language['mail_error'] = 'Failed to send email.';

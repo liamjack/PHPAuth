@@ -130,6 +130,11 @@ class PHPAuth
 
         // Add user to database
         $this->database->addUser($user);
+
+        if(Configuration::ACCOUNT_ACTIVATION_REQUIRED) {
+            // Account activation is required, send activation email
+            $this->sendActivationEmail($email);
+        }
     }
 
     /**
@@ -221,6 +226,92 @@ class PHPAuth
 
         // Delete user's cookie
         $this->deleteSessionCookie();
+    }
+
+    /**
+     * Sends an account activation to the provided email address
+     *
+     * @param   string  $email
+     *
+     * @throws  Exception
+     */
+    private function sendActivationEmail($email)
+    {
+        // Create JWT token
+
+        $signer = new Lcobucci\JWT\Signer\Hmac\Sha256();
+
+        $token = (new Lcobucci\JWT\Builder())->setIssuedAt(time())
+                                             ->setExpiration(strtotime(Configuration::ACCOUNT_ACTIVATION_EXPIRY))
+                                             ->set('action', 'activate')
+                                             ->set('email', $email)
+                                             ->sign($signer, Configuration::ACCOUNT_ACTIVATION_SECRET)
+                                             ->getToken();
+
+        $body = strreplace(
+            '%activation_token%',
+            $token,
+            file_get_contents(
+                Configuration::ACCOUNT_ACTIVATION_BODY_FILE
+            )
+        );
+
+        $altBody = strreplace(
+            '%activation_token%',
+            $token,
+            file_get_contents(
+                Configuration::ACCOUNT_ACTIVATION_ALTBODY_FILE
+            )
+        );
+
+        // Send to email address
+        sendEmail($email, Configuration::ACCOUNT_ACTIVATION_SUBJECT, $body, $altBody);
+    }
+
+
+    /**
+     * Sends an email to the provided email address, with the provided subject, body and altBody
+     *
+     * @param   string  $email
+     * @param   string  $subject
+     * @param   string  $body
+     * @param   string  $altBody
+     *
+     * @throws  Exception
+     */
+    private function sendEmail($email, $subject, $body, $altBody)
+    {
+        $mail = new PHPMailer();
+
+        if(Configuration::MAIL_SMTP) {
+            // Email is sent via SMTP
+
+            $mail->isSMTP();
+
+            $mail->Host = Configuration::MAIL_SMTP_HOSTNAME;
+            $mail->SMTPSecure = Configuration::MAIL_SMTP_SECURE;
+            $mail->Port = Configuration::MAIL_SMTP_PORT;
+
+            if(Configuration::MAIL_SMTP_AUTH) {
+                // SMTP authentication is required
+
+                $mail->SMTPAuth = true;
+                $mail->Username = Configuration::MAIL_SMTP_USERNAME;
+                $mail->Password = Configuration::MAIL_SMTP_PASSWORD;
+            }
+        }
+
+        $mail->setFrom(Configuration::MAIL_FROM_EMAIL, Configuration::MAIL_FROM_NAME);
+        $mail->addAddress($email);
+        $mail->isHTML(true);
+
+        $mail->Subject = $subject;
+        $mail->Body = $body;
+        $mail->AltBody = $altBody;
+
+        if(!$mail->send()) {
+            throw new \Exception("mail_error");
+        }
     }
 
     /**
