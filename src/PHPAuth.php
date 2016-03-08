@@ -239,9 +239,9 @@ class PHPAuth
     {
         // Create JWT token
 
-        $signer = new Lcobucci\JWT\Signer\Hmac\Sha256();
+        $signer = new \Lcobucci\JWT\Signer\Hmac\Sha256();
 
-        $token = (new Lcobucci\JWT\Builder())->setIssuedAt(time())
+        $token = (new \Lcobucci\JWT\Builder())->setIssuedAt(time())
                                              ->setExpiration(strtotime(Configuration::ACCOUNT_ACTIVATION_EXPIRY))
                                              ->set('action', 'activate')
                                              ->set('email', $email)
