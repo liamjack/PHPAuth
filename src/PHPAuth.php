@@ -248,7 +248,7 @@ class PHPAuth
                                              ->sign($signer, Configuration::ACCOUNT_ACTIVATION_SECRET)
                                              ->getToken();
 
-        $body = \strreplace(
+        $body = str_replace(
             '%activation_token%',
             $token,
             file_get_contents(
@@ -256,7 +256,7 @@ class PHPAuth
             )
         );
 
-        $altBody = \strreplace(
+        $altBody = str_replace(
             '%activation_token%',
             $token,
             file_get_contents(
