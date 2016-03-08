@@ -52,9 +52,9 @@ class Configuration
     // Subject of account activation email
     const ACCOUNT_ACTIVATION_SUBJECT = 'PHPAuth - Account activation required';
     // Path to Body template file of account activation email
-    const ACCOUNT_ACTIVATION_BODY_FILE = '../templates/activation_email.html';
+    const ACCOUNT_ACTIVATION_BODY_FILE = __DIR__ . '/../templates/activation_email.html';
     // Path to AltBody template file of account activation email
-    const ACCOUNT_ACTIVATION_ALTBODY_FILE = '../templates/activation_email.txt';
+    const ACCOUNT_ACTIVATION_ALTBODY_FILE = __DIR__ . '/../templates/activation_email.txt';
 
 
     // Whether emails should be sent via SMTP or not

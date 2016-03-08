@@ -265,7 +265,7 @@ class PHPAuth
         );
 
         // Send to email address
-        sendEmail($email, Configuration::ACCOUNT_ACTIVATION_SUBJECT, $body, $altBody);
+        $this->sendEmail($email, Configuration::ACCOUNT_ACTIVATION_SUBJECT, $body, $altBody);
     }
 
 
