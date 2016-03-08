@@ -33,3 +33,6 @@ $language['system_error'] = 'System error encountered.';
 
 $language['request_type_invalid'] = 'Request type is invalid.';
 $language['mail_error'] = 'Failed to send email.';
+
+$language['token_invalid'] = 'Activation token invalid.';
+$language['token_expired'] = 'Activation token expired.';

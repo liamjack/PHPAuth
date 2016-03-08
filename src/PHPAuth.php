@@ -286,7 +286,9 @@ class PHPAuth
 
         $data = new \Lcobucci\JWT\ValidationData();
 
-        var_dump($token->validate($data));
+        if(!$token->validate($data)) {
+            throw new \Exception("token_expired");
+        }
     }
 
 
