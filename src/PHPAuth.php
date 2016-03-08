@@ -248,7 +248,7 @@ class PHPAuth
                                              ->sign($signer, Configuration::ACCOUNT_ACTIVATION_SECRET)
                                              ->getToken();
 
-        $body = strreplace(
+        $body = \strreplace(
             '%activation_token%',
             $token,
             file_get_contents(
@@ -256,7 +256,7 @@ class PHPAuth
             )
         );
 
-        $altBody = strreplace(
+        $altBody = \strreplace(
             '%activation_token%',
             $token,
             file_get_contents(
@@ -281,7 +281,7 @@ class PHPAuth
      */
     private function sendEmail($email, $subject, $body, $altBody)
     {
-        $mail = new PHPMailer();
+        $mail = new \PHPMailer();
 
         if(Configuration::MAIL_SMTP) {
             // Email is sent via SMTP
