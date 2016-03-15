@@ -121,12 +121,6 @@ class UserTest extends PHPUnit_Framework_TestCase
         $this->assertNull(\PHPAuth\User::validatePasswordStrength(self::PASSWORD_VALID));
     }
 
-    
-
-    /**
-     * @expectedException			Exception
-     * @expectedExceptionMessage	password_incorrect
-     */
     public function testVerifyPasswordIncorrect()
     {
         $password = \PHPAuth\User::hashPassword(self::PASSWORD_VALID);

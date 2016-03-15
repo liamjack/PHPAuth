@@ -175,6 +175,7 @@ class PHPAuthTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @depends                     testRegister
      * @expectedException			Exception
      * @expectedExceptionMessage	email_used
      */
