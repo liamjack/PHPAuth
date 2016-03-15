@@ -25,7 +25,7 @@ class PHPAuthTest extends PHPUnit_Framework_TestCase
 
     public function __construct()
     {
-        $this->database = new \PHPAuth\Database\MySQL('localhost', 'root', 'root', 'phpauth_db');
+        $this->database = new \PHPAuth\Database\MySQL('localhost', 'root', '', 'phpauth_db');
         $this->phpauth = new \PHPAuth\PHPAuth($this->database);
 
         $_SERVER['REMOTE_ADDR'] = self::TEST_IP_ADDRESS;
