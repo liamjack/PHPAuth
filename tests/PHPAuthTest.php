@@ -69,6 +69,7 @@ class PHPAuthTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @depends testRegister
      * @expectedException			Exception
      * @expectedExceptionMessage	email_password_incorrect
      */
@@ -78,6 +79,7 @@ class PHPAuthTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @depends testRegister
      * @expectedException			Exception
      * @expectedExceptionMessage	password_empty
      */
@@ -87,6 +89,7 @@ class PHPAuthTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @depends testRegister
      * @expectedException			Exception
      * @expectedExceptionMessage	password_short
      */
@@ -96,6 +99,7 @@ class PHPAuthTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @depends testRegister
      * @expectedException			Exception
      * @expectedExceptionMessage	password_long
      */
@@ -105,6 +109,7 @@ class PHPAuthTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @depends testRegister
      * @expectedException			Exception
      * @expectedExceptionMessage	password_weak
      */
@@ -114,6 +119,7 @@ class PHPAuthTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @depends testRegister
      * @expectedException			Exception
      * @expectedExceptionMessage	email_password_incorrect
      */
@@ -122,6 +128,9 @@ class PHPAuthTest extends PHPUnit_Framework_TestCase
         $this->phpauth->login(self::EMAIL_VALID, self::PASSWORD_INCORRECT);
     }
 
+    /**
+     * @depends testRegister
+     */
     public function testLogin()
     {
         $session = $this->phpauth->login(self::EMAIL_VALID, self::PASSWORD_VALID);
@@ -217,6 +226,11 @@ class PHPAuthTest extends PHPUnit_Framework_TestCase
     public function testRegisterPasswordNoMatch()
     {
         $this->phpauth->register(self::EMAIL_VALID, self::PASSWORD_VALID, self::PASSWORD_VALID_2);
+    }
+
+    public function testRegister()
+    {
+        $this->phpauth->register(self::EMAIL_VALID, self::PASSWORD_VALID, self::PASSWORD_VALID);
     }
 
     public function testIsSessionValid()
