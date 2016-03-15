@@ -102,19 +102,26 @@ class UserTest extends PHPUnit_Framework_TestCase
         \PHPAuth\User::validatePassword(self::PASSWORD_LONG);
     }
 
+    public function testValidatePassword()
+    {
+       $this->assertNull(\PHPAuth\User::validatePassword(self::PASSWORD_VALID));
+    }
+
     /**
      * @expectedException			Exception
      * @expectedExceptionMessage	password_weak
      */
-    public function testValidatePasswordWeak()
+    public function testValidatePasswordStrengthWeak()
     {
-        \PHPAuth\User::validatePassword(self::PASSWORD_WEAK);
+        \PHPAuth\User::validatePasswordStrength(self::PASSWORD_WEAK);
     }
 
-    public function testValidatePassword()
+    public function testValidatePasswordStrength()
     {
-        \PHPAuth\User::validatePassword(self::PASSWORD_VALID);
+        $this->assertNull(\PHPAuth\User::validatePasswordStrength(self::PASSWORD_VALID));
     }
+
+    
 
     /**
      * @expectedException			Exception
@@ -125,7 +132,7 @@ class UserTest extends PHPUnit_Framework_TestCase
         $password = \PHPAuth\User::hashPassword(self::PASSWORD_VALID);
 
         $user = new \PHPAuth\User(self::USER_ID, self::EMAIL_VALID, self::PASSWORD_VALID, true);
-        $user->verifyPassword(self::PASSWORD_VALID_2);
+        $this->assertFalse($user->verifyPassword(self::PASSWORD_VALID_2));
     }
 
     public function testVerifyPassword()
@@ -133,6 +140,6 @@ class UserTest extends PHPUnit_Framework_TestCase
         $password = \PHPAuth\User::hashPassword(self::PASSWORD_VALID);
 
         $user = new \PHPAuth\User(self::USER_ID, self::EMAIL_VALID, $password, true);
-        $this->assertEquals(null, $user->verifyPassword(self::PASSWORD_VALID));
+        $this->assertTrue($user->verifyPassword(self::PASSWORD_VALID));
     }
 }
