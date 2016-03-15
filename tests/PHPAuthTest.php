@@ -129,13 +129,31 @@ class PHPAuthTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testRegister
+     * @depends                     testRegister
+     * @expectedException           Exception
+     * @expectedExceptionMessage    account_not_activated
+     */
+    public function testLoginNotActivated()
+    {
+        $session = $this->phpauth->login(self::EMAIL_VALID, self::PASSWORD_VALID);
+    }
+
+    /**
+     * @depends testActivate
      */
     public function testLogin()
     {
         $session = $this->phpauth->login(self::EMAIL_VALID, self::PASSWORD_VALID);
 
         $this->assertEquals(self::TEST_USER_AGENT, $session->getUserAgent());
+    }
+
+    /**
+     * @depends                     testRegister
+     */
+    public function testActivate()
+    {   
+        // TODO with some way of getting the email and activating the account
     }
 
     /**
@@ -232,12 +250,5 @@ class PHPAuthTest extends PHPUnit_Framework_TestCase
     public function testRegister()
     {
         $this->phpauth->register(self::EMAIL_VALID, self::PASSWORD_VALID, self::PASSWORD_VALID);
-    }
-
-    public function testIsSessionValid()
-    {
-        $session = $this->phpauth->login(self::EMAIL_VALID, self::PASSWORD_VALID);
-
-        $this->assertTrue($this->phpauth->isSessionValid($session->getUuid()));
     }
 }
