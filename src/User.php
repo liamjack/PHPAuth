@@ -263,7 +263,7 @@ class User
      *
      * @return User
      */
-    public static function createUser($email, $password, $isActivated = !Configuration::ACCOUNT_ACTIVATION_REQUIRED)
+    public static function createUser($email, $password, $isActivated = false)
     {
         return new self(null, $email, self::hashPassword($password), $isActivated);
     }
