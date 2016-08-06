@@ -18,7 +18,7 @@
         "wiki": "https://github.com/cuonic/PHPAuth/wiki"
     },
     "require": {
-        "php": ">=5.5",
+        "php": ">=7.0",
         "bjeavons/zxcvbn-php": "*",
         "phpmailer/phpmailer": "^5.2",
         "lcobucci/jwt": "dev-master"
