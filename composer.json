@@ -21,7 +21,7 @@
         "php": ">=5.5",
         "bjeavons/zxcvbn-php": "*",
         "phpmailer/phpmailer": "^5.2",
-        "lcobucci/jwt": "^3.1"
+        "lcobucci/jwt": "dev-master"
     },
     "autoload": {
         "psr-4": {

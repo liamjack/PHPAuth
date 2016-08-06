@@ -239,14 +239,18 @@ class PHPAuth
     {
         // Create JWT token
 
-        $signer = new \Lcobucci\JWT\Signer\Hmac\Sha256();
+        $config = new \Lcobucci\JWT\Configuration();
 
-        $token = (new \Lcobucci\JWT\Builder())->setIssuedAt(time())
-                                             ->setExpiration(strtotime(Configuration::ACCOUNT_ACTIVATION_EXPIRY))
-                                             ->set('action', 'activate')
-                                             ->set('email', $email)
-                                             ->sign($signer, Configuration::ACCOUNT_ACTIVATION_SECRET)
-                                             ->getToken();
+        $signer = $config->getSigner();
+
+        $token = $config->createBuilder()
+                        ->setIssuedAt(time())
+                        ->setNotBefore(time())
+                        ->setExpiration(strtotime(Configuration::ACCOUNT_ACTIVATION_EXPIRY))
+                        ->set('action', 'activate')
+                        ->set('email', $email)
+                        ->sign($signer, Configuration::ACCOUNT_ACTIVATION_SECRET)
+                        ->getToken();
 
         $body = str_replace(
             '%activation_token%',
@@ -277,8 +281,10 @@ class PHPAuth
      */
     public function activate($token)
     {
-        $token = (new \Lcobucci\JWT\Parser())->parse($token);
-        $signer = new \Lcobucci\JWT\Signer\Hmac\Sha256();
+        $config = new \Lcobucci\JWT\Configuration();
+        $signer = $config->getSigner();
+
+        $token = $config->getParser()->parse((string) $token);
 
         if(!$token->verify($signer, Configuration::ACCOUNT_ACTIVATION_SECRET)) {
             throw new \Exception("token_invalid");
