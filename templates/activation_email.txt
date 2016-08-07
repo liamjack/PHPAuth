@@ -1,4 +1,4 @@
-You recently created an account on www.example.com.
+You recently created an account on %site_name%.
 
 To be able to use your account you need to activate it by opening the the following link in your browser:</p>
 

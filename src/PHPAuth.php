@@ -315,16 +315,16 @@ class PHPAuth
                         ->getToken();
 
         $body = str_replace(
-            '%activation_token%',
-            $token,
+            array('%activation_token%', '%site_name%'),
+            array($token, Configuration::SITE_NAME),
             file_get_contents(
                 Configuration::ACCOUNT_ACTIVATION_BODY_FILE
             )
         );
 
         $altBody = str_replace(
-            '%activation_token%',
-            $token,
+            array('%activation_token%', '%site_name%'),
+            array($token, Configuration::SITE_NAME),
             file_get_contents(
                 Configuration::ACCOUNT_ACTIVATION_ALTBODY_FILE
             )
@@ -377,7 +377,7 @@ class PHPAuth
 
         // Set the account as activated
         $user->setIsActivated(true);
-        
+
         // Update user in database
         $this->database->updateUser($user);
     }

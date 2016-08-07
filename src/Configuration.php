@@ -8,6 +8,9 @@ namespace PHPAuth;
  */
 class Configuration
 {
+    // The name of the site
+    const SITE_NAME = 'Example Site';
+
     // Whether registration is enabled of not
     const REGISTRATION_ENABLED = true;
 
