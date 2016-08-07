@@ -23,22 +23,13 @@ interface Database
     public function getUserByEmail($email);
 
     /**
-     * Informs if a user exists with a given email address.
-     *
-     * @param string $email The email address to lookup
-     *
-     * @return bool
-     */
-    public function doesUserExistByEmail($email);
-
-    /**
      * Adds a user to the database.
      *
      * @param User $user
      *
      * @throws Exception
      */
-    public function addUser(\PHPAuth\User $user);
+    public function addUser(\PHPAuth\Model\User $user);
 
     /**
      * Updates a user in the database.
@@ -47,7 +38,7 @@ interface Database
      *
      * @throws Exception
      */
-    public function updateUser(\PHPAuth\User $user);
+    public function updateUser(\PHPAuth\Model\User $user);
 
     /**
      * Deletes a user from the database by user ID.
@@ -65,7 +56,7 @@ interface Database
      *
      * @throws Exception
      */
-    public function addSession(\PHPAuth\Session $session);
+    public function addSession(\PHPAuth\Model\Session $session);
 
     /**
      * Updates a session in the database.
@@ -74,7 +65,7 @@ interface Database
      *
      * @throws Exception
      */
-    public function updateSession(\PHPAuth\Session $session);
+    public function updateSession(\PHPAuth\Model\Session $session);
 
     /**
      * Deletes a session from the database.
@@ -93,4 +84,13 @@ interface Database
      * @return Session
      */
     public function getSession($sessionUuid);
+
+    /**
+     * Returns an array of active sessions belonging to the specified user
+     *
+     * @param int $userId The user's id
+     *
+     * @return array
+     */
+    public function getSessionsByUserId($userId);
 }

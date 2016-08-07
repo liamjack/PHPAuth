@@ -38,3 +38,6 @@ $language['mail_error'] = 'Failed to send email.';
 
 $language['token_invalid'] = 'Activation token invalid.';
 $language['token_expired'] = 'Activation token expired.';
+
+$language['session_not_found'] = 'Session not found.';
+$language['session_current'] = 'You cannot revoke your current session.';

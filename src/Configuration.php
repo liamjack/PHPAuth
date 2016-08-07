@@ -44,11 +44,11 @@ class Configuration
     const SESSION_COOKIE_HTTPONLY = true;
 
     // Whether account activation is required
-    const ACCOUNT_ACTIVATION_REQUIRED = false;
+    const ACCOUNT_ACTIVATION_REQUIRED = true;
     // Amount of time an account activation link is valid for
-    const ACCOUNT_ACTIVATION_EXPIRY = '+30 minutes';
+    const ACCOUNT_ACTIVATION_EXPIRY = '+10 minutes';
     // Secret used to sign activation JWT
-    const ACCOUNT_ACTIVATION_SECRET = '01c8a42fe26f1937e3ff9cf7f17f1779e3bccd8ef3c9b1981d75e949642c7518';
+    const ACCOUNT_ACTIVATION_SECRET = '10101010-RandomStringGoesHere-01010101';
     // Subject of account activation email
     const ACCOUNT_ACTIVATION_SUBJECT = 'PHPAuth - Account activation required';
     // Path to Body template file of account activation email

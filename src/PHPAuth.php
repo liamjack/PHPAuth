@@ -33,6 +33,62 @@ class PHPAuth
     }
 
     /**
+     * Returns information on the current session
+     *
+     * @return array
+     */
+    public function getSessionInfo() {
+        if($this->isAuthenticated()) {
+            return array(
+                "isAuthenticated" => true,
+                "email" => $this->getAuthenticatedUser()->getEmail()
+            );
+        } else {
+            return array(
+                "isAuthenticated" => false
+            );
+        }
+    }
+
+    /**
+     * Returns an array of active session belonging to the current user
+     *
+     * @return array
+     */
+    public function getActiveSessions() {
+        if(!$this->isAuthenticated()) {
+            // User is not authenticated
+            throw new \Exception('not_authenticated');
+        }
+
+        $sessions = $this->database->getSessionsByUserId($this->getAuthenticatedUser()->getId());
+        
+        return $sessions;
+    }
+
+    /**
+     * Deletes / revokes a session
+     *
+     * @param string $sessionUuid
+     * @throws Exception
+     */
+    public function deleteSession($sessionUuid) {
+        $session = $this->database->getSession($sessionUuid);
+
+        if(!$session || $session->getUserId() != $this->getAuthenticatedUser()->getId()) {
+            // Session does not exist / does not belong to current user
+            throw new \Exception("session_not_found");
+        }
+
+        if($session->getUuid() == $this->getCurrentSession()->getUuid()) {
+            // Desired session to revoke is the current session
+            throw new \Exception("session_current");
+        }
+
+        $this->database->deleteSession($sessionUuid);
+    }
+
+    /**
      * Allows a user to authenticate and creates a new session.
      *
      * @param string $email    User's email address
@@ -50,10 +106,10 @@ class PHPAuth
         }
 
         // Validate email address
-        User::validateEmail($email);
+        Model\User::validateEmail($email);
 
         // Validate password
-        User::validatePassword($password);
+        Model\User::validatePassword($password);
 
         // Get user with provided email address
         $user = $this->database->getUserByEmail($email);
@@ -74,7 +130,7 @@ class PHPAuth
         }
 
         // Create a new session
-        $session = Session::createSession($user->getId(), $isPersistent);
+        $session = Model\Session::createSession($user->getId(), $isPersistent);
 
         // Add session to database
         $this->database->addSession($session);
@@ -107,34 +163,39 @@ class PHPAuth
         }
 
         // Validate email address
-        User::validateEmail($email);
+        Model\User::validateEmail($email);
 
         // Validate password
-        User::validatePassword($password);
+        Model\User::validatePassword($password);
 
         // Validate password strength
-        User::validatePasswordStrength($password);
+        Model\User::validatePasswordStrength($password);
 
         if ($password !== $repeatPassword) {
             // Password and password confirmation do not match
             throw new \Exception('password_no_match');
         }
 
-        if ($this->database->doesUserExistByEmail($email)) {
+        $user = $this->database->getUserByEmail($email);
+
+        if($user) {
             // User with this email address already exists
             throw new \Exception('email_used');
         }
 
-        // Create new user
-        $user = User::createUser($email, $password);
+        if(Configuration::ACCOUNT_ACTIVATION_REQUIRED) {
+            // Create new user
+            $user = Model\User::createUser($email, $password, false);
+
+            // Account activation is required, send activation email
+            $this->sendActivationEmail($email);
+        } else {
+            // Create new user
+            $user = Model\User::createUser($email, $password, true);
+        }
 
         // Add user to database
         $this->database->addUser($user);
-
-        if(Configuration::ACCOUNT_ACTIVATION_REQUIRED) {
-            // Account activation is required, send activation email
-            $this->sendActivationEmail($email);
-        }
     }
 
     /**
@@ -197,7 +258,7 @@ class PHPAuth
         }
 
         // Validate password
-        User::validatePassword($password);
+        Model\User::validatePassword($password);
 
         if (!$this->authenticatedUser->verifyPassword($password)) {
             // User's password is incorrect
@@ -213,6 +274,8 @@ class PHPAuth
 
     /**
      * Logs the user out.
+     *
+     * @throws Exception
      */
     public function logout()
     {
@@ -238,7 +301,6 @@ class PHPAuth
     private function sendActivationEmail($email)
     {
         // Create JWT token
-
         $config = new \Lcobucci\JWT\Configuration();
 
         $signer = $config->getSigner();
@@ -282,6 +344,7 @@ class PHPAuth
     public function activate($token)
     {
         $config = new \Lcobucci\JWT\Configuration();
+
         $signer = $config->getSigner();
 
         $token = $config->getParser()->parse((string) $token);
@@ -314,7 +377,7 @@ class PHPAuth
 
         // Set the account as activated
         $user->setIsActivated(true);
-
+        
         // Update user in database
         $this->database->updateUser($user);
     }
@@ -382,7 +445,7 @@ class PHPAuth
         }
 
         // Validate the session's UUID
-        if (!Session::validateUuid($sessionUuid)) {
+        if (!Model\Session::validateUuid($sessionUuid)) {
             return false;
         }
 
@@ -437,7 +500,7 @@ class PHPAuth
      *
      * @param User $user
      */
-    private function setAuthenticatedUser(User $user)
+    private function setAuthenticatedUser(Model\User $user)
     {
         $this->authenticatedUser = $user;
         $this->isAuthenticated = true;

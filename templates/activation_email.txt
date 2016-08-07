@@ -2,4 +2,4 @@ You recently created an account on www.example.com.
 
 To be able to use your account you need to activate it by opening the the following link in your browser:</p>
 
-http://www.example.com/activate/%activation_token%
+https://example.com/#/activate/%activation_token%/

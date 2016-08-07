@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPAuth;
+namespace PHPAuth\Model;
 
 /**
  * @author Liam Jack <cuonic@cuonic.com>
@@ -15,6 +15,7 @@ class Session
     private $creationDate;
     private $expiryDate;
     private $isPersistent;
+    private $lastActiveDate;
     private $isUpdateRequired = false;
 
     /**
@@ -24,9 +25,10 @@ class Session
      * @param string $ipAddress
      * @param int    $creationDate
      * @param int    $expiryDate
+     * @param int    $lastActiveDate
      * @param bool   $isPersistent
      */
-    public function __construct($uuid, $userId, $userAgent, $ipAddress, $creationDate, $expiryDate, $isPersistent = false)
+    public function __construct($uuid, $userId, $userAgent, $ipAddress, $creationDate, $expiryDate, $lastActiveDate, $isPersistent = false)
     {
         $this->uuid = $uuid;
         $this->userId = $userId;
@@ -34,6 +36,7 @@ class Session
         $this->ipAddress = $ipAddress;
         $this->creationDate = $creationDate;
         $this->expiryDate = $expiryDate;
+        $this->lastActiveDate = $lastActiveDate;
         $this->isPersistent = $isPersistent;
     }
 
@@ -120,6 +123,25 @@ class Session
     }
 
     /**
+     * Returns the date of last activity of the session.
+     *
+     * @return int
+     */
+    public function getLastActiveDate() {
+        return $this->lastActiveDate;
+    }
+
+    /**
+     * Modifies the date of last activity of the session.
+     *
+     * @param int $lastActiveDate
+     */
+    private function setLastActiveDate($lastActiveDate) {
+        $this->isUpdateRequired = true;
+        $this->lastActiveDate = $lastActiveDate;
+    }
+
+    /**
      * Indicates whether the session is persistent or not.
      *
      * @return bool
@@ -157,7 +179,7 @@ class Session
         if ($ipAddress !== $this->getIpAddress()) {
             // Session IP differs from user's current IP
 
-            if (Configuration::SESSION_CHECK_IP_ADDRESS) {
+            if (\PHPAuth\Configuration::SESSION_CHECK_IP_ADDRESS) {
                 // IP address verification is enforced: session invalid
                 return false;
             }
@@ -173,11 +195,31 @@ class Session
 
         if (!$this->isPersistent()) {
             // Session is non persistent, update session expiry date since the session is still in use
-            $this->setExpiryDate(strtotime(Configuration::SESSION_NON_PERSISTENT_TIME));
+            $this->setExpiryDate(strtotime(\PHPAuth\Configuration::SESSION_NON_PERSISTENT_TIME));
         }
+
+        $this->setLastActiveDate(time());
 
         // Session is valid
         return true;
+    }
+
+    /**
+     * Returns an array containing the session's public information
+     *
+     * @return array
+     */
+    public function toArray() {
+        return array(
+            "uuid" => $this->getUuid(),
+            "userId" => $this->getUserId(),
+            "userAgent" => $this->getUserAgent(),
+            "ipAddress" => $this->getIpAddress(),
+            "creationDate" => date('c', $this->getCreationDate()),
+            "expiryDate" => date('c', $this->getExpiryDate()),
+            "lastActiveDate" => date('c', $this->getLastActiveDate()),
+            "isPersistent" => $this->isPersistent()
+        );
     }
 
     /**
@@ -213,9 +255,9 @@ class Session
         $creationDate = time();
 
         if ($isPersistent) {
-            $expiryDate = strtotime(Configuration::SESSION_PERSISTENT_TIME);
+            $expiryDate = strtotime(\PHPAuth\Configuration::SESSION_PERSISTENT_TIME);
         } else {
-            $expiryDate = strtotime(Configuration::SESSION_NON_PERSISTENT_TIME);
+            $expiryDate = strtotime(\PHPAuth\Configuration::SESSION_NON_PERSISTENT_TIME);
         }
 
         $ipAddress = $_SERVER['REMOTE_ADDR'];
@@ -223,7 +265,7 @@ class Session
 
         $uuid = self::generateUuid();
 
-        return new self($uuid, $userId, $userAgent, $ipAddress, $creationDate, $expiryDate, $isPersistent);
+        return new self($uuid, $userId, $userAgent, $ipAddress, $creationDate, $expiryDate, NULL, $isPersistent);
     }
 
     /**

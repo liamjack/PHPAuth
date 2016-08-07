@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPAuth;
+namespace PHPAuth\Model;
 
 /**
  * @author Liam Jack <cuonic@cuonic.com>
@@ -113,11 +113,11 @@ class User
             throw new \Exception('email_empty');
         }
 
-        if (strlen($email) < Configuration::EMAIL_MINIMUM_LENGTH) {
+        if (strlen($email) < \PHPAuth\Configuration::EMAIL_MINIMUM_LENGTH) {
             throw new \Exception('email_short');
         }
 
-        if (strlen($email) > Configuration::EMAIL_MAXIMUM_LENGTH) {
+        if (strlen($email) > \PHPAuth\Configuration::EMAIL_MAXIMUM_LENGTH) {
             throw new \Exception('email_long');
         }
 
@@ -139,11 +139,11 @@ class User
             throw new \Exception('password_empty');
         }
 
-        if (strlen($password) < Configuration::PASSWORD_MINIMUM_LENGTH) {
+        if (strlen($password) < \PHPAuth\Configuration::PASSWORD_MINIMUM_LENGTH) {
             throw new \Exception('password_short');
         }
 
-        if (strlen($password) > Configuration::PASSWORD_MAXIMUM_LENGTH) {
+        if (strlen($password) > \PHPAuth\Configuration::PASSWORD_MAXIMUM_LENGTH) {
             throw new \Exception('password_long');
         }
     }
@@ -160,7 +160,7 @@ class User
         $zxcvbn = new \ZxcvbnPhp\Zxcvbn();
         $score = $zxcvbn->passwordStrength($password)['score'];
 
-        if ($score < Configuration::PASSWORD_MINIMUM_SCORE) {
+        if ($score < \PHPAuth\Configuration::PASSWORD_MINIMUM_SCORE) {
             throw new \Exception('password_weak');
         }
     }
@@ -231,6 +231,19 @@ class User
     }
 
     /**
+     * Returns an array containing the user's public information
+     *
+     * @return array
+     */
+    public function toArray() {
+        return array(
+            "id" => $this->getId(),
+            "email" => $this->getEmail(),
+            "isActivated" => $this->isActivated()
+        );
+    }
+
+    /**
      * Hashes a password.
      *
      * @param string $password
@@ -239,7 +252,7 @@ class User
      */
     public static function hashPassword($password)
     {
-        return password_hash($password, PASSWORD_BCRYPT, array('cost' => Configuration::PASSWORD_HASH_COST));
+        return password_hash($password, PASSWORD_BCRYPT, array('cost' => \PHPAuth\Configuration::PASSWORD_HASH_COST));
     }
 
     /**
