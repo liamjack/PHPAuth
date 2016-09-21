@@ -252,7 +252,16 @@ class User
      */
     public static function hashPassword($password)
     {
-        return password_hash($password, PASSWORD_BCRYPT, array('cost' => \PHPAuth\Configuration::PASSWORD_HASH_COST));
+        return password_hash(
+            hash(
+                \PHPAuth\Configuration::PASSWORD_HASH_ALGO, 
+                $password
+            ), 
+            PASSWORD_BCRYPT, 
+            array(
+                'cost' => \PHPAuth\Configuration::PASSWORD_HASH_COST
+            )
+        );
     }
 
     /**
@@ -264,7 +273,13 @@ class User
      */
     public function verifyPassword($password)
     {
-        return password_verify($password, $this->passwordHash);
+        return password_verify(
+            hash(
+                \PHPAuth\Configuration::PASSWORD_HASH_ALGO,
+                $password
+            ),
+            $this->passwordHash
+        );
     }
 
     /**

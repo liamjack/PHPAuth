@@ -27,6 +27,8 @@ class Configuration
     const PASSWORD_MINIMUM_SCORE = 2;
     // The cost of bcrypt hashing
     const PASSWORD_HASH_COST = 11;
+    // The initial password hashing algorithm
+    const PASSWORD_HASH_ALGO = 'sha256';
 
     // Whether to check the user's IP address against session IP address
     const SESSION_CHECK_IP_ADDRESS = false;
