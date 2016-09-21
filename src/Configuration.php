@@ -49,7 +49,7 @@ class Configuration
     const SESSION_COOKIE_HTTPONLY = true;
 
     // Whether account activation is required
-    const ACCOUNT_ACTIVATION_REQUIRED = true;
+    const ACCOUNT_ACTIVATION_REQUIRED = false;
     // Amount of time an account activation link is valid for
     const ACCOUNT_ACTIVATION_EXPIRY = '+10 minutes';
     // Secret used to sign activation JWT
