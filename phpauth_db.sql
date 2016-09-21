@@ -1,4 +1,18 @@
 --
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+
+CREATE TABLE `user` (
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_email` varchar(150) NOT NULL,
+  `user_password_hash` varchar(60) NOT NULL,
+  `user_is_activated` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+--
 -- Table structure for table `session`
 --
 
@@ -18,17 +32,3 @@ CREATE TABLE `session` (
   KEY `userId` (`session_user_id`),
   CONSTRAINT `userId` FOREIGN KEY (`session_user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Table structure for table `user`
---
-
-DROP TABLE IF EXISTS `user`;
-
-CREATE TABLE `user` (
-  `user_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_email` varchar(150) NOT NULL,
-  `user_password_hash` varchar(60) NOT NULL,
-  `user_is_activated` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
