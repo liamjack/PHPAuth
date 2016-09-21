@@ -26,8 +26,8 @@ CREATE TABLE `log` (
   `log_ip_address` varchar(45) NOT NULL,
   `log_date` int(11) NOT NULL,
   PRIMARY KEY (`log_id`),
-  KEY `userId` (`log_user_id`),
-  CONSTRAINT `userId` FOREIGN KEY (`log_user_id`) REFERENCES `user`
+  KEY `log_user_id` (`log_user_id`),
+  CONSTRAINT `log_user_id` FOREIGN KEY (`log_user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 --
@@ -47,6 +47,6 @@ CREATE TABLE `session` (
   `session_is_persistent` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`session_uuid`),
   UNIQUE KEY `uuid` (`session_uuid`),
-  KEY `userId` (`session_user_id`),
-  CONSTRAINT `userId` FOREIGN KEY (`session_user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `session_user_id` (`session_user_id`),
+  CONSTRAINT `session_user_id` FOREIGN KEY (`session_user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
