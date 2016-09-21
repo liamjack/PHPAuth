@@ -6,13 +6,15 @@ class MySQL implements \PHPAuth\Database
 {
     private $dbh;
 
-    /*
+    /**
      * Initiates the database connection
-     * @param $host
-     * @param $username
-     * @param $password
-     * @param $databaseName
-     * @throws PDOException
+     * 
+     * @param   string  $host
+     * @param   string  $username
+     * @param   string  $password
+     * @param   string  $databaseName
+     *
+     * @throws  PDOException
      */
 
     public function __construct($host, $username, $password, $databaseName)
@@ -301,12 +303,95 @@ class MySQL implements \PHPAuth\Database
     }
 
     /**
+     * Returns a log entry identified by it's ID
+     *
+     * @param   int     $logId
+     *
+     * @return  Log
+     */
+    public function getLogById($logId) {
+        $query = $this->dbh->prepare("
+            SELECT *
+            FROM
+                log
+            WHERE
+                log_id = ?
+        ");
+
+        $query->execute(array(
+            $logId
+        ));
+
+        $row = $query->fetch();
+
+        return self::newLog($row);
+    }
+
+    /**
+     * Returns an array of log entries belonging to a user identified by ID
+     *
+     * @param   int     $userId
+     *
+     * @return  array
+     */
+    public function getLogsByUserId($userId) {
+        $query = $this->dbh->prepare("
+            SELECT *
+            FROM
+                log
+            WHERE
+                log_user_id = ?
+        ");
+
+        $query->execute(array(
+            $userId
+        ));
+
+        $logs = array();
+
+        while($row = $query->fetch()) {
+            $logs[] = self::newLog($row);
+        }
+
+        return $logs;
+    }
+
+    /**
+     * Adds a new log entry to the database
+     *
+     * @param   Log     $log
+     */
+    public function addLog(\PHPAuth\Model\Log $log) {
+        $query = $this->dbh->prepare("
+            INSERT INTO
+                log (
+                    log_user_id,
+                    log_action,
+                    log_comment,
+                    log_ip_address,
+                    log_date
+                )
+            VALUES
+                (?, ?, ?, ?, ?)
+        ");
+
+        $query->execute(array(
+            $log->getUserId(),
+            $log->getAction(),
+            $log->getComment(),
+            $log->getIpAddress(),
+            $log->getDate()
+        ));
+    }
+
+    /**
      * Creates a new user from a database row
      *
      * @param array $row
+     *
      * @return \PHPAuth\Model\User
      */
-    public static function newUser($row) {
+    private static function newUser($row) {
         if (!$row) {
             return false;
         }
@@ -322,10 +407,11 @@ class MySQL implements \PHPAuth\Database
     /**
      * Creates a new session from a database row
      *
-     * @param array $row
+     * @param   array   $row
+     * 
      * @return \PHPAuth\Model\Session
      */
-    public static function newSession($row) {
+    private static function newSession($row) {
         if (!$row) {
             return false;
         }
@@ -339,6 +425,28 @@ class MySQL implements \PHPAuth\Database
             $row['session_expiry_date'],
             $row['session_last_active_date'],
             $row['session_is_persistent']
+        );
+    }
+
+    /**
+     * Creates a new log entry from a database row
+     *
+     * @param   array   $row
+     * 
+     * @return  \PHPAuth\Model\Log
+     */
+    private static function newLog($row) {
+        if(!$row) {
+            return false;
+        }
+
+        return new \PHPAuth\Model\Log(
+            $row['log_id'],
+            $row['log_user_id'],
+            $row['log_action'],
+            $row['log_comment'],
+            $row['log_ip_address'],
+            $row['log_date']
         );
     }
 }

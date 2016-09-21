@@ -13,6 +13,24 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 --
+-- Table structure for table `log`
+--
+
+DROP TABLE IF EXISTS `log`;
+
+CREATE TABLE `log` (
+  `log_id` int(11) NOT NULL AUTO_INCREMENT,
+  `log_user_id` int(11) DEFAULT NULL,
+  `log_action` varchar(45) NOT NULL,
+  `log_comment` varchar(100) DEFAULT NULL,
+  `log_ip_address` varchar(45) NOT NULL,
+  `log_date` int(11) NOT NULL,
+  PRIMARY KEY (`log_id`),
+  KEY `userId` (`log_user_id`),
+  CONSTRAINT `userId` FOREIGN KEY (`log_user_id`) REFERENCES `user`
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+--
 -- Table structure for table `session`
 --
 

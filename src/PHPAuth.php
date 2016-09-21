@@ -114,7 +114,7 @@ class PHPAuth
         // Get user with provided email address
         $user = $this->database->getUserByEmail($email);
 
-        if ($user == null) {
+        if (!$user) {
             // User does not exist
             throw new \Exception('email_password_incorrect');
         }
@@ -130,16 +130,24 @@ class PHPAuth
         }
 
         // Create a new session
-        $session = Model\Session::createSession($user->getId(), $isPersistent);
+        $session = Model\Session::createSession(
+            $user->getId(),
+            $isPersistent
+        );
 
         // Add session to database
         $this->database->addSession($session);
 
         // Set the user's session cookie
-        $this->setSessionCookie($session->getUuid(), $session->getExpiryDate());
+        $this->setSessionCookie(
+            $session->getUuid(),
+            $session->getExpiryDate()
+        );
 
         // Set authenticated user
         $this->setAuthenticatedUser($user);
+
+        $this->addLog("user.login");
     }
 
     /**
@@ -185,13 +193,21 @@ class PHPAuth
 
         if(Configuration::ACCOUNT_ACTIVATION_REQUIRED) {
             // Create new user
-            $user = Model\User::createUser($email, $password, false);
+            $user = Model\User::createUser(
+                $email,
+                $password,
+                false
+            );
 
             // Account activation is required, send activation email
             $this->sendActivationEmail($email);
         } else {
             // Create new user
-            $user = Model\User::createUser($email, $password, true);
+            $user = Model\User::createUser(
+                $email,
+                $password,
+                true
+            );
         }
 
         // Add user to database
@@ -219,6 +235,8 @@ class PHPAuth
 
         // Push the change to the database
         $this->database->updateUser($this->authenticatedUser);
+
+        $this->addLog("user.change_password");
     }
 
     /**
@@ -241,6 +259,8 @@ class PHPAuth
 
         // Push the change to the database
         $this->database->updateUser($this->authenticatedUser);
+
+        $this->addLog("user.change_email");
     }
 
     /**
@@ -268,6 +288,8 @@ class PHPAuth
         // Delete the user from the database
         $this->database->deleteUser($this->authenticatedUser->getId());
 
+        $this->addLog("user.delete");
+
         // Logout the user
         $this->logout();
     }
@@ -289,6 +311,10 @@ class PHPAuth
 
         // Delete user's cookie
         $this->deleteSessionCookie();
+
+        $this->addLog("user.logout");
+
+        $this->setAuthenticatedUser(NULL);
     }
 
     /**
@@ -445,7 +471,7 @@ class PHPAuth
         }
 
         // Validate the session's UUID
-        if (!Model\Session::validateUuid($sessionUuid)) {
+        if (!Util::validateUuid($sessionUuid)) {
             return false;
         }
 
@@ -502,6 +528,13 @@ class PHPAuth
      */
     private function setAuthenticatedUser(Model\User $user)
     {
+        if(!$user) {
+            $this->authenticatedUser = NULL;
+            $this->isAuthenticated = false;
+
+            return;
+        }
+
         $this->authenticatedUser = $user;
         $this->isAuthenticated = true;
     }
@@ -553,11 +586,55 @@ class PHPAuth
     }
 
     /**
-     * Deletes the user's session cookie.
+     * Deletes the current user's session cookie.
      */
     public function deleteSessionCookie()
     {
         unset($_COOKIE[Configuration::SESSION_COOKIE_NAME]);
         $this->setSessionCookie(null, time() - 3600);
+    }
+
+    /**
+     * Retrieves logs entries for the authenticated user
+     *
+     * @return  array
+     */
+    public function getLogs()
+    {
+        if (!$this->isAuthenticated()) {
+            // User is not authenticated
+            throw new \Exception('not_authenticated');
+        }
+
+        $logs = $this->database->getLogsByUserId(
+            $this->getAuthenticatedUser()->getId()
+        );
+
+        return $logs;
+    }
+
+    /**
+     * Adds a log entry to the database
+     *
+     * @param   string  $action
+     * @param   string  $comment
+     *
+     * @throws  Exception
+     */
+    private function addLog($action, $comment = NULL) {
+        if($this->isAuthenticated()) {
+            $userId = $this->getAuthenticatedUser()->getId();
+        } else {
+            $userId = NULL;
+        }
+
+        $log = Model\Log::createLog(
+            $userId,
+            $action,
+            $comment,
+            $_SERVER['REMOTE_ADDR']
+        );
+
+        $this->database->addLog($log);
     }
 }

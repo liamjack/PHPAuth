@@ -93,4 +93,29 @@ interface Database
      * @return array
      */
     public function getSessionsByUserId($userId);
+
+    /**
+     * Returns a log entry identified by it's ID
+     *
+     * @param   int     $logId
+     *
+     * @return  Log
+     */
+    public function getLogById($logId);
+
+    /**
+     * Returns an array of log entries belonging to a user identified by ID
+     *
+     * @param   int     $userId
+     *
+     * @return  array
+     */
+    public function getLogsByUserId($userId);
+
+    /**
+     * Adds a new log entry to the database
+     *
+     * @param   Log     $log
+     */
+    public function addLog(\PHPAuth\Model\Log $log);
 }

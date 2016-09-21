@@ -223,22 +223,6 @@ class Session
     }
 
     /**
-     * Generates a random UUID.
-     *
-     * @return string
-     */
-    public static function generateUuid()
-    {
-        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0x0fff) | 0x4000,
-            mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-        );
-    }
-
-    /**
      * Creates a new session for a given user.
      *
      * @param int  $userId       User's ID
@@ -263,7 +247,7 @@ class Session
         $ipAddress = $_SERVER['REMOTE_ADDR'];
         $userAgent = $_SERVER['HTTP_USER_AGENT'];
 
-        $uuid = self::generateUuid();
+        $uuid = \PHPAuth\Util::generateUuid();
 
         return new self($uuid, $userId, $userAgent, $ipAddress, $creationDate, $expiryDate, NULL, $isPersistent);
     }
@@ -282,19 +266,5 @@ class Session
         }
     }
 
-    /**
-     * Validates a session UUID.
-     *
-     * @param string $sessionUuid The session's UUID
-     *
-     * @throws Exception
-     */
-    public static function validateUuid($sessionUuid)
-    {
-        if (preg_match('/^([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})$/', $sessionUuid) == 1) {
-            return true;
-        }
-
-        return false;
-    }
+    
 }

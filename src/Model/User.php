@@ -109,15 +109,17 @@ class User
      */
     public static function validateEmail($email)
     {
-        if (strlen($email) == 0) {
+        $strlen = strlen($email);
+
+        if ($strlen == 0) {
             throw new \Exception('email_empty');
         }
 
-        if (strlen($email) < \PHPAuth\Configuration::EMAIL_MINIMUM_LENGTH) {
+        if ($strlen < \PHPAuth\Configuration::EMAIL_MINIMUM_LENGTH) {
             throw new \Exception('email_short');
         }
 
-        if (strlen($email) > \PHPAuth\Configuration::EMAIL_MAXIMUM_LENGTH) {
+        if ($strlen > \PHPAuth\Configuration::EMAIL_MAXIMUM_LENGTH) {
             throw new \Exception('email_long');
         }
 
@@ -135,15 +137,17 @@ class User
      */
     public static function validatePassword($password)
     {
-        if (strlen($password) == 0) {
+        $strlen = strlen($password);
+
+        if ($strlen == 0) {
             throw new \Exception('password_empty');
         }
 
-        if (strlen($password) < \PHPAuth\Configuration::PASSWORD_MINIMUM_LENGTH) {
+        if ($strlen < \PHPAuth\Configuration::PASSWORD_MINIMUM_LENGTH) {
             throw new \Exception('password_short');
         }
 
-        if (strlen($password) > \PHPAuth\Configuration::PASSWORD_MAXIMUM_LENGTH) {
+        if ($strlen > \PHPAuth\Configuration::PASSWORD_MAXIMUM_LENGTH) {
             throw new \Exception('password_long');
         }
     }
@@ -293,6 +297,11 @@ class User
      */
     public static function createUser($email, $password, $isActivated = false)
     {
-        return new self(null, $email, self::hashPassword($password), $isActivated);
+        return new self(
+            null,
+            $email,
+            self::hashPassword($password),
+            $isActivated
+        );
     }
 }
