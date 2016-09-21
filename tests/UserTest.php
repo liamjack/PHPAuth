@@ -22,14 +22,14 @@ class UserTest extends PHPUnit_Framework_TestCase
 
     public function testGetEmail()
     {
-        $user = new \PHPAuth\User(self::USER_ID, self::EMAIL_VALID, self::PASSWORD_HASH, true);
+        $user = new \PHPAuth\Model\User(self::USER_ID, self::EMAIL_VALID, self::PASSWORD_HASH, true);
 
         $this->assertEquals(self::EMAIL_VALID, $user->getEmail());
     }
 
     public function testGetId()
     {
-        $user = new \PHPAuth\User(self::USER_ID, self::EMAIL_VALID, self::PASSWORD_HASH, true);
+        $user = new \PHPAuth\Model\User(self::USER_ID, self::EMAIL_VALID, self::PASSWORD_HASH, true);
 
         $this->assertEquals(self::USER_ID, $user->getId());
     }
@@ -40,7 +40,7 @@ class UserTest extends PHPUnit_Framework_TestCase
      */
     public function testValidateEmailEmpty()
     {
-        \PHPAuth\User::validateEmail(self::EMAIL_EMPTY);
+        \PHPAuth\Model\User::validateEmail(self::EMAIL_EMPTY);
     }
 
     /**
@@ -49,7 +49,7 @@ class UserTest extends PHPUnit_Framework_TestCase
      */
     public function testValidateEmailShort()
     {
-        \PHPAuth\User::validateEmail(self::EMAIL_SHORT);
+        \PHPAuth\Model\User::validateEmail(self::EMAIL_SHORT);
     }
 
     /**
@@ -58,7 +58,7 @@ class UserTest extends PHPUnit_Framework_TestCase
      */
     public function testValidateEmailLong()
     {
-        \PHPAuth\User::validateEmail(self::EMAIL_LONG);
+        \PHPAuth\Model\User::validateEmail(self::EMAIL_LONG);
     }
 
     /**
@@ -67,12 +67,12 @@ class UserTest extends PHPUnit_Framework_TestCase
      */
     public function testValidateEmailInvalid()
     {
-        \PHPAuth\User::validateEmail(self::EMAIL_INVALID);
+        \PHPAuth\Model\User::validateEmail(self::EMAIL_INVALID);
     }
 
     public function testValidateEmail()
     {
-        $this->assertEquals(null, \PHPAuth\User::validateEmail(self::EMAIL_VALID));
+        $this->assertEquals(null, \PHPAuth\Model\User::validateEmail(self::EMAIL_VALID));
     }
 
     /**
@@ -81,7 +81,7 @@ class UserTest extends PHPUnit_Framework_TestCase
      */
     public function testValidatePasswordEmpty()
     {
-        \PHPAuth\User::validatePassword(self::PASSWORD_EMPTY);
+        \PHPAuth\Model\User::validatePassword(self::PASSWORD_EMPTY);
     }
 
     /**
@@ -90,7 +90,7 @@ class UserTest extends PHPUnit_Framework_TestCase
      */
     public function testValidatePasswordShort()
     {
-        \PHPAuth\User::validatePassword(self::PASSWORD_SHORT);
+        \PHPAuth\Model\User::validatePassword(self::PASSWORD_SHORT);
     }
 
     /**
@@ -99,12 +99,12 @@ class UserTest extends PHPUnit_Framework_TestCase
      */
     public function testValidatePasswordLong()
     {
-        \PHPAuth\User::validatePassword(self::PASSWORD_LONG);
+        \PHPAuth\Model\User::validatePassword(self::PASSWORD_LONG);
     }
 
     public function testValidatePassword()
     {
-       $this->assertNull(\PHPAuth\User::validatePassword(self::PASSWORD_VALID));
+       $this->assertNull(\PHPAuth\Model\User::validatePassword(self::PASSWORD_VALID));
     }
 
     /**
@@ -113,27 +113,27 @@ class UserTest extends PHPUnit_Framework_TestCase
      */
     public function testValidatePasswordStrengthWeak()
     {
-        \PHPAuth\User::validatePasswordStrength(self::PASSWORD_WEAK);
+        \PHPAuth\Model\User::validatePasswordStrength(self::PASSWORD_WEAK);
     }
 
     public function testValidatePasswordStrength()
     {
-        $this->assertNull(\PHPAuth\User::validatePasswordStrength(self::PASSWORD_VALID));
+        $this->assertNull(\PHPAuth\Model\User::validatePasswordStrength(self::PASSWORD_VALID));
     }
 
     public function testVerifyPasswordIncorrect()
     {
-        $password = \PHPAuth\User::hashPassword(self::PASSWORD_VALID);
+        $password = \PHPAuth\Model\User::hashPassword(self::PASSWORD_VALID);
 
-        $user = new \PHPAuth\User(self::USER_ID, self::EMAIL_VALID, self::PASSWORD_VALID, true);
+        $user = new \PHPAuth\Model\User(self::USER_ID, self::EMAIL_VALID, self::PASSWORD_VALID, true);
         $this->assertFalse($user->verifyPassword(self::PASSWORD_VALID_2));
     }
 
     public function testVerifyPassword()
     {
-        $password = \PHPAuth\User::hashPassword(self::PASSWORD_VALID);
+        $password = \PHPAuth\Model\User::hashPassword(self::PASSWORD_VALID);
 
-        $user = new \PHPAuth\User(self::USER_ID, self::EMAIL_VALID, $password, true);
+        $user = new \PHPAuth\Model\User(self::USER_ID, self::EMAIL_VALID, $password, true);
         $this->assertTrue($user->verifyPassword(self::PASSWORD_VALID));
     }
 }
