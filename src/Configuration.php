@@ -21,8 +21,6 @@ class Configuration
 
     // Minimum length for a password
     const PASSWORD_MINIMUM_LENGTH = 8;
-    // Maximum length for a password
-    const PASSWORD_MAXIMUM_LENGTH = 72;
     // Minimum score for a password (see zxcvbn's scoring system)
     const PASSWORD_MINIMUM_SCORE = 2;
     // The cost of bcrypt hashing

@@ -146,10 +146,6 @@ class User
         if ($strlen < \PHPAuth\Configuration::PASSWORD_MINIMUM_LENGTH) {
             throw new \Exception('password_short');
         }
-
-        if ($strlen > \PHPAuth\Configuration::PASSWORD_MAXIMUM_LENGTH) {
-            throw new \Exception('password_long');
-        }
     }
 
     /**
