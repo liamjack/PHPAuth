@@ -341,16 +341,16 @@ class PHPAuth
                         ->getToken();
 
         $body = str_replace(
-            array('%activation_token%', '%site_name%'),
-            array($token, Configuration::SITE_NAME),
+            array('%activation_token%', '%site_name%', '%base_url%'),
+            array($token, Configuration::SITE_NAME, Configuration::SITE_BASE_URL),
             file_get_contents(
                 Configuration::ACCOUNT_ACTIVATION_BODY_FILE
             )
         );
 
         $altBody = str_replace(
-            array('%activation_token%', '%site_name%'),
-            array($token, Configuration::SITE_NAME),
+            array('%activation_token%', '%site_name%', '%base_url%'),
+            array($token, Configuration::SITE_NAME, Configuration::SITE_BASE_URL),
             file_get_contents(
                 Configuration::ACCOUNT_ACTIVATION_ALTBODY_FILE
             )

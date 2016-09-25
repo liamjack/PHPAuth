@@ -10,6 +10,8 @@ class Configuration
 {
     // The name of the site
     const SITE_NAME = 'Example Site';
+    // The base URL of the site (without trailing slash)
+    const SITE_BASE_URL = 'https://example.com';
 
     // Whether registration is enabled of not
     const REGISTRATION_ENABLED = true;
@@ -22,7 +24,7 @@ class Configuration
     // Minimum length for a password
     const PASSWORD_MINIMUM_LENGTH = 8;
     // Minimum score for a password (see zxcvbn's scoring system)
-    const PASSWORD_MINIMUM_SCORE = 2;
+    const PASSWORD_MINIMUM_SCORE = 3;
     // The cost of bcrypt hashing
     const PASSWORD_HASH_COST = 11;
     // The initial password hashing algorithm
