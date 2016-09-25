@@ -93,15 +93,6 @@ class UserTest extends PHPUnit_Framework_TestCase
         \PHPAuth\Model\User::validatePassword(self::PASSWORD_SHORT);
     }
 
-    /**
-     * @expectedException			Exception
-     * @expectedExceptionMessage	password_long
-     */
-    public function testValidatePasswordLong()
-    {
-        \PHPAuth\Model\User::validatePassword(self::PASSWORD_LONG);
-    }
-
     public function testValidatePassword()
     {
        $this->assertNull(\PHPAuth\Model\User::validatePassword(self::PASSWORD_VALID));

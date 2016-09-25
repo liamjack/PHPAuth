@@ -101,16 +101,6 @@ class PHPAuthTest extends PHPUnit_Framework_TestCase
     /**
      * @depends testRegister
      * @expectedException			Exception
-     * @expectedExceptionMessage	password_long
-     */
-    public function testLoginPasswordLong()
-    {
-        $this->phpauth->login(self::EMAIL_VALID, self::PASSWORD_LONG);
-    }
-
-    /**
-     * @depends testRegister
-     * @expectedException			Exception
      * @expectedExceptionMessage	password_weak
      */
     public function testLoginPasswordWeak()
