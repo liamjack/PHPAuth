@@ -1,8 +1,7 @@
 {
-    "name": "cuonic/phpauth",
+    "name": "liamjack/phpauth",
     "description": "Easy to use PHP Authentication library",
     "type": "library",
-    "homepage": "https://phpauth.cuonic.com/",
     "license": "MIT",
     "authors": [
         {
@@ -13,9 +12,9 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/cuonic/PHPAuth/issues",
-        "source": "https://github.com/cuonic/PHPAuth",
-        "wiki": "https://github.com/cuonic/PHPAuth/wiki"
+        "issues": "https://github.com/liamjack/PHPAuth/issues",
+        "source": "https://github.com/liamjack/PHPAuth",
+        "wiki": "https://github.com/liamjack/PHPAuth/wiki"
     },
     "require": {
         "php": ">=7.0",
