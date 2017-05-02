@@ -100,13 +100,11 @@ class Log
     public static function validateAction($action) {
         $strlen = strlen($action);
 
-        if($strlen == 0) {
+        if($strlen == 0)
             throw new \Exception("log_action_empty");
-        }
 
-        if($strlen > 45) {
+        if($strlen > 45)
             throw new \Exception("log_action_long");
-        }
     }
 
     /**
@@ -117,9 +115,8 @@ class Log
      * @throws  Exception
      */
     public static function validateComment($comment) {
-        if(strlen($comment) > 100) {
+        if(strlen($comment) > 100)
             throw new \Exception("log_comment_long");
-        }
     }
 
     /**

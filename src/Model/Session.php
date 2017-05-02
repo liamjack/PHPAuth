@@ -171,32 +171,24 @@ class Session
         $userAgent = $_SERVER['HTTP_USER_AGENT'];
         $ipAddress = $_SERVER['REMOTE_ADDR'];
 
-        if ($userAgent !== $this->getUserAgent()) {
-            // Session user agent differs from user's current user agent: session invalid
+        if ($userAgent !== $this->getUserAgent())
             return false;
-        }
 
         if ($ipAddress !== $this->getIpAddress()) {
             // Session IP differs from user's current IP
 
-            if (\PHPAuth\Configuration::SESSION_CHECK_IP_ADDRESS) {
-                // IP address verification is enforced: session invalid
+            if (\PHPAuth\Configuration::SESSION_CHECK_IP_ADDRESS)
                 return false;
-            }
 
             // IP address verification is not enforced, update IP address stored in database
             $this->setIpAddress($ipAddress);
         }
 
-        if (time() >= $this->getExpiryDate()) {
-            // Session has expired
+        if (time() >= $this->getExpiryDate())
             return false;
-        }
 
-        if (!$this->isPersistent()) {
-            // Session is non persistent, update session expiry date since the session is still in use
+        if (!$this->isPersistent())
             $this->setExpiryDate(strtotime(\PHPAuth\Configuration::SESSION_NON_PERSISTENT_TIME));
-        }
 
         $this->setLastActiveDate(time());
 
@@ -238,11 +230,10 @@ class Session
 
         $creationDate = time();
 
-        if ($isPersistent) {
+        if ($isPersistent)
             $expiryDate = strtotime(\PHPAuth\Configuration::SESSION_PERSISTENT_TIME);
-        } else {
+        else
             $expiryDate = strtotime(\PHPAuth\Configuration::SESSION_NON_PERSISTENT_TIME);
-        }
 
         $ipAddress = $_SERVER['REMOTE_ADDR'];
         $userAgent = $_SERVER['HTTP_USER_AGENT'];
@@ -261,9 +252,8 @@ class Session
      */
     public static function validateIsPersistent($isPersistent)
     {
-        if (!is_bool($isPersistent)) {
+        if (!is_bool($isPersistent))
             throw new \Exception('is_persistent_invalid');
-        }
     }
 
     

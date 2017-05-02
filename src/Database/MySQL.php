@@ -392,9 +392,8 @@ class MySQL implements \PHPAuth\Database
      * @return \PHPAuth\Model\User
      */
     private static function newUser($row) {
-        if (!$row) {
+        if (!$row)
             return false;
-        }
 
         return new \PHPAuth\Model\User(
             $row['user_id'],
@@ -412,9 +411,8 @@ class MySQL implements \PHPAuth\Database
      * @return \PHPAuth\Model\Session
      */
     private static function newSession($row) {
-        if (!$row) {
+        if (!$row)
             return false;
-        }
 
         return new \PHPAuth\Model\Session(
             $row['session_uuid'],
@@ -436,9 +434,8 @@ class MySQL implements \PHPAuth\Database
      * @return  \PHPAuth\Model\Log
      */
     private static function newLog($row) {
-        if(!$row) {
+        if(!$row)
             return false;
-        }
 
         return new \PHPAuth\Model\Log(
             $row['log_id'],

@@ -26,9 +26,8 @@ class PHPAuth
         if (isset($_COOKIE[Configuration::SESSION_COOKIE_NAME])) {
             $sessionUuid = $_COOKIE[Configuration::SESSION_COOKIE_NAME];
 
-            if (!$this->isSessionValid($sessionUuid)) {
+            if (!$this->isSessionValid($sessionUuid))
                 $this->deleteSessionCookie();
-            }
         }
     }
 
@@ -38,16 +37,15 @@ class PHPAuth
      * @return array
      */
     public function getSessionInfo() {
-        if($this->isAuthenticated()) {
+        if($this->isAuthenticated())
             return array(
                 "isAuthenticated" => true,
                 "email" => $this->getAuthenticatedUser()->getEmail()
             );
-        } else {
-            return array(
-                "isAuthenticated" => false
-            );
-        }
+
+        return array(
+            "isAuthenticated" => false
+        );
     }
 
     /**
@@ -56,14 +54,10 @@ class PHPAuth
      * @return array
      */
     public function getActiveSessions() {
-        if(!$this->isAuthenticated()) {
-            // User is not authenticated
+        if(!$this->isAuthenticated())
             throw new \Exception('not_authenticated');
-        }
 
-        $sessions = $this->database->getSessionsByUserId($this->getAuthenticatedUser()->getId());
-        
-        return $sessions;
+        return $this->database->getSessionsByUserId($this->getAuthenticatedUser()->getId());
     }
 
     /**
@@ -73,17 +67,14 @@ class PHPAuth
      * @throws Exception
      */
     public function deleteSession($sessionUuid) {
+        $this->checkIsAuthenticated();
+
         $session = $this->database->getSession($sessionUuid);
 
-        if(!$session || $session->getUserId() != $this->getAuthenticatedUser()->getId()) {
-            // Session does not exist / does not belong to current user
-            throw new \Exception("session_not_found");
-        }
+        if(!$session || $session->getUserId() != $this->getAuthenticatedUser()->getId())
 
-        if($session->getUuid() == $this->getCurrentSession()->getUuid()) {
-            // Desired session to revoke is the current session
+        if($session->getUuid() == $this->getCurrentSession()->getUuid())
             throw new \Exception("session_current");
-        }
 
         $this->database->deleteSession($sessionUuid);
     }
@@ -100,10 +91,7 @@ class PHPAuth
      */
     public function login($email, $password, $isPersistent = false)
     {
-        if ($this->isAuthenticated()) {
-            // User is already authenticated
-            throw new \Exception('already_authenticated');
-        }
+        $this->checkIsNotAuthenticated();
 
         // Validate email address
         Model\User::validateEmail($email);
@@ -114,20 +102,14 @@ class PHPAuth
         // Get user with provided email address
         $user = $this->database->getUserByEmail($email);
 
-        if (!$user) {
-            // User does not exist
+        if (!$user)
             throw new \Exception('email_password_incorrect');
-        }
 
-        if(!$user->isActivated()) {
-            // Account is not yet activated
+        if(!$user->isActivated())
             throw new \Exception("account_not_activated");
-        }
 
-        if (!$user->verifyPassword($password)) {
-            // Provided password doesn't match the user's password
+        if (!$user->verifyPassword($password))
             throw new \Exception('email_password_incorrect');
-        }
 
         // Create a new session
         $session = Model\Session::createSession(
@@ -161,14 +143,10 @@ class PHPAuth
      */
     public function register($email, $password, $repeatPassword)
     {
-        if (!Configuration::REGISTRATION_ENABLED) {
+        if (!Configuration::REGISTRATION_ENABLED)
             throw new \Exception('registration_disabled');
-        }
 
-        if ($this->isAuthenticated()) {
-            // User is already authenticated
-            throw new \Exception('already_authenticated');
-        }
+        $this->checkIsNotAuthenticated();
 
         // Validate email address
         Model\User::validateEmail($email);
@@ -179,19 +157,15 @@ class PHPAuth
         // Validate password strength
         Model\User::validatePasswordStrength($password);
 
-        if ($password !== $repeatPassword) {
-            // Password and password confirmation do not match
+        if ($password !== $repeatPassword)
             throw new \Exception('password_no_match');
-        }
 
         $user = $this->database->getUserByEmail($email);
 
-        if($user) {
-            // User with this email address already exists
+        if ($user)
             throw new \Exception('email_used');
-        }
 
-        if(Configuration::ACCOUNT_ACTIVATION_REQUIRED) {
+        if (Configuration::ACCOUNT_ACTIVATION_REQUIRED) {
             // Create new user
             $user = Model\User::createUser(
                 $email,
@@ -225,10 +199,7 @@ class PHPAuth
      */
     public function changePassword($password, $newPassword, $repeatNewPassword)
     {
-        if (!$this->isAuthenticated()) {
-            // User is not authenticated
-            throw new \Exception('not_authenticated');
-        }
+        $this->checkIsAuthenticated();
 
         // Change the user's password
         $this->authenticatedUser->changePassword($password, $newPassword, $repeatNewPassword);
@@ -249,10 +220,7 @@ class PHPAuth
      */
     public function changeEmail($password, $newEmail)
     {
-        if (!$this->isAuthenticated()) {
-            // User is not authenticated
-            throw new \Exception('not_authenticated');
-        }
+        $this->checkIsAuthenticated();
 
         // Change the user's email address
         $this->authenticatedUser->changeEmail($password, $newEmail);
@@ -272,18 +240,13 @@ class PHPAuth
      */
     public function delete($password)
     {
-        if (!$this->isAuthenticated()) {
-            // User is not authenticated
-            throw new \Exception('not_authenticated');
-        }
+        $this->checkIsAuthenticated();
 
         // Validate password
         Model\User::validatePassword($password);
 
-        if (!$this->authenticatedUser->verifyPassword($password)) {
-            // User's password is incorrect
+        if (!$this->authenticatedUser->verifyPassword($password))
             throw new \Exception('password_incorrect');
-        }
 
         // Delete the user from the database
         $this->database->deleteUser($this->authenticatedUser->getId());
@@ -301,10 +264,7 @@ class PHPAuth
      */
     public function logout()
     {
-        if (!$this->isAuthenticated()) {
-            // User is not authenticated
-            throw new \Exception('not_authenticated');
-        }
+        $this->checkIsAuthenticated();
 
         // Delete the user's session from database
         $this->database->deleteSession($this->currentSession->getUuid());
@@ -375,31 +335,24 @@ class PHPAuth
 
         $token = $config->getParser()->parse((string) $token);
 
-        if(!$token->verify($signer, Configuration::ACCOUNT_ACTIVATION_SECRET)) {
+        if(!$token->verify($signer, Configuration::ACCOUNT_ACTIVATION_SECRET))
             throw new \Exception("token_invalid");
-        }
 
         $data = new \Lcobucci\JWT\ValidationData();
 
-        if(!$token->validate($data)) {
+        if(!$token->validate($data))
             throw new \Exception("token_expired");
-        }
 
-        if($token->getClaim('action') != 'activate') {
+        if($token->getClaim('action') != 'activate')
             throw new \Exception("token_invalid");
-        }
 
         $user = $this->database->getUserByEmail($token->getClaim('email'));
 
-        if($user == null) {
-            // No user exists with that email address
+        if($user == null)
             throw new \Exception("email_incorrect");
-        }
 
-        if($user->isActivated()) {
-            // Account is already activated
+        if($user->isActivated())
             throw new \Exception("already_activated");
-        }
 
         // Set the account as activated
         $user->setIsActivated(true);
@@ -450,9 +403,8 @@ class PHPAuth
         $mail->Body = $body;
         $mail->AltBody = $altBody;
 
-        if(!$mail->send()) {
+        if(!$mail->send())
             throw new \Exception("mail_error");
-        }
     }
 
     /**
@@ -465,23 +417,18 @@ class PHPAuth
      */
     public function isSessionValid($sessionUuid)
     {
-        if ($this->isAuthenticated()) {
-            // Session already validated
+        if ($this->isAuthenticated())
             return true;
-        }
 
         // Validate the session's UUID
-        if (!Util::validateUuid($sessionUuid)) {
+        if (!Util::validateUuid($sessionUuid))
             return false;
-        }
 
         // Fetch the session from the database
         $this->currentSession = $this->database->getSession($sessionUuid);
 
-        if ($this->currentSession == null) {
-            // Session doesn't exist
+        if ($this->currentSession == null)
             return false;
-        }
 
         if (!$this->currentSession->isValid()) {
             // Session is invalid, delete
@@ -490,10 +437,8 @@ class PHPAuth
             return false;
         }
 
-        if ($this->currentSession->isUpdateRequired()) {
-            // Session has been updated during verification, push update to database
+        if ($this->currentSession->isUpdateRequired())
             $this->database->updateSession($this->currentSession);
-        }
 
         // Session is valid, set authenticated user
         $this->setAuthenticatedUserById($this->currentSession->getUserId());
@@ -509,6 +454,28 @@ class PHPAuth
     public function isAuthenticated()
     {
         return $this->isAuthenticated;
+    }
+
+    /**
+     * Throws an exception if the user is not authenticated
+     *
+     * @throws Exception
+     */
+    public function checkIsAuthenticated()
+    {
+        if (!$this->isAuthenticated())
+            throw new \Exception('not_authenticated');
+    }
+
+    /**
+     * Throws an exception is the user is already authenticated
+     *
+     * @throws Exception
+     */
+    public function checkIsNotAuthenticated()
+    {
+        if ($this->isAuthenticated())
+            throw new \Exception("already_authenticated");
     }
 
     /**
@@ -531,7 +498,6 @@ class PHPAuth
         if(!$user) {
             $this->authenticatedUser = NULL;
             $this->isAuthenticated = false;
-
             return;
         }
 
@@ -548,12 +514,10 @@ class PHPAuth
     {
         $this->authenticatedUser = $this->database->getUserById($userId);
 
-        if ($this->authenticatedUser == null) {
-            // User doesn't exist
+        if ($this->authenticatedUser == null)
             $this->isAuthenticated = false;
-        } else {
+        else
             $this->isAuthenticated = true;
-        }
     }
 
     /**
@@ -601,16 +565,11 @@ class PHPAuth
      */
     public function getLogs()
     {
-        if (!$this->isAuthenticated()) {
-            // User is not authenticated
-            throw new \Exception('not_authenticated');
-        }
+        $this->checkIsAuthenticated();
 
-        $logs = $this->database->getLogsByUserId(
+        return $this->database->getLogsByUserId(
             $this->getAuthenticatedUser()->getId()
         );
-
-        return $logs;
     }
 
     /**
@@ -622,11 +581,10 @@ class PHPAuth
      * @throws  Exception
      */
     private function addLog($action, $comment = NULL) {
-        if($this->isAuthenticated()) {
+        if($this->isAuthenticated())
             $userId = $this->getAuthenticatedUser()->getId();
-        } else {
+        else
             $userId = NULL;
-        }
 
         $log = Model\Log::createLog(
             $userId,
