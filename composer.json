@@ -24,8 +24,7 @@
     },
     "autoload": {
         "psr-4": {
-            "PHPAuth\\": "src/",
-            "PHPAuth\\Database\\": "src/database"
+            "PHPAuth\\": "src/"
         }
     }
 }
