@@ -8,6 +8,7 @@ PHP 7 compatible library for authenticating users using session cookies.
 
   * Login
   * Sign up
+  * Activate account
   * Change email address
   * Change password
   * Delete account
