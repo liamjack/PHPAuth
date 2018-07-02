@@ -90,14 +90,15 @@ class MySQL implements \PHPAuth\Database
     {
         $query = $this->dbh->prepare('
             INSERT INTO
-                user (user_email, user_password_hash)
+                user (user_email, user_password_hash, user_is_activated)
             VALUES
-                (?, ?)
+                (?, ?, ?)
         ');
 
         $query->execute(array(
             $user->getEmail(),
-            $user->getPasswordHash(),
+	    $user->getPasswordHash(),
+	    $user->isActivated()
         ));
     }
 
